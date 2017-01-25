@@ -5,8 +5,7 @@
 	<classpathentry kind="lib" path="X:/SpigotJars/1_11/Spigot-API/target/spigot-api-1.11-R0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="X:/SpigotJars/1_11/Spigot-API/target/spigot-api-1.11-R0.1-SNAPSHOT-shaded.jar"/>
 	<classpathentry kind="lib" path="X:/SpigotJars/1_11/Spigot-Server/target/spigot-1.11-R0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="X:/110dev/plugins/MythicLib.jar"/>
-	<classpathentry kind="lib" path="X:/110dev/plugins/MythicMobs-2.5.1.jar" sourcepath="X:/maven/MythicMobs-2.5.1_source_from_cfr"/>
 	<classpathentry kind="lib" path="X:/110dev/plugins/Quests-2.7.3.jar" sourcepath="X:/maven/Quests-master"/>
+	<classpathentry kind="lib" path="X:/SpigotJars/MythicMobs-2.5.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

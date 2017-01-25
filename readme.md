@@ -2,6 +2,8 @@
 
 Copy the jar file into your servers Quests/modules/ folder. Restart the server.
 
+Use QuestMMKillObjective260.jar for MythicMobs 2.6 or QuestMMKillObjective250.jar for 2.5 Versions.
+
 Example config:
 
           custom-objectives:

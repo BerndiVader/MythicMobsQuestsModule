@@ -12,6 +12,7 @@ import me.blackvein.quests.Quester;
 import me.blackvein.quests.Quests;
 import net.elseland.xikage.MythicMobs.API.Bukkit.Events.MythicMobDeathEvent;
 
+
 public class QuestMMKillObjective extends CustomObjective implements Listener {
 	
 	public QuestMMKillObjective() {
