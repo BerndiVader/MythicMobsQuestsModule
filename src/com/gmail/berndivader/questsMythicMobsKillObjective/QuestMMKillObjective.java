@@ -43,7 +43,7 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 		if (!(bukkitentity.getKiller() instanceof Player)) return;
 		String mobtype = null;
 		Player p;
-		if ((mmVer > 244 && mmVer < 252)) {
+		if ((mmVer > 244 && mmVer < 252 || mmVer == 2511)) {
 			net.elseland.xikage.MythicMobs.Mobs.ActiveMob am = 
 					net.elseland.xikage.MythicMobs.MythicMobs.inst().getAPI().getMobAPI().getMythicMobInstance(bukkitentity);
 			if (am==null) return;
