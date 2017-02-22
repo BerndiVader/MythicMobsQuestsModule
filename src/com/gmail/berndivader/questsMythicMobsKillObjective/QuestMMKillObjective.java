@@ -21,7 +21,6 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 	private String strMMVer;
 	private int mmVer;
 	
-	
 	public QuestMMKillObjective() {
 		setName("Kill MythicMobs Objective");
 		addData("Objective Name");
