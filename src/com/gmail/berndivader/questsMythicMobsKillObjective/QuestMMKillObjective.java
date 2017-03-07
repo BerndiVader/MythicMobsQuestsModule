@@ -37,8 +37,8 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 		setShowCount(true);
 		setCountPrompt("How many MythicMobs to kill");
 		setDisplay("%Objective Name%, Counter: %count%");
-		strMMVer = Bukkit.getServer().getPluginManager().getPlugin("MythicMobs").getDescription().getVersion();
-		mmVer = Integer.valueOf(strMMVer.replaceAll("\\.", ""));
+    	strMMVer = Bukkit.getServer().getPluginManager().getPlugin("MythicMobs").getDescription().getVersion().replaceAll("[\\D]", "");
+		mmVer = Integer.valueOf(strMMVer);
 	}
 
 	public int getCounter() {
