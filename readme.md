@@ -2,3 +2,7 @@
 
 4.3.2017 Update: fixed bug that only ActiveMob livingentity instances count & added level support
 
+
+### How2use?
+
+Install the jar into /Quests/Modules/ and restart the server.
