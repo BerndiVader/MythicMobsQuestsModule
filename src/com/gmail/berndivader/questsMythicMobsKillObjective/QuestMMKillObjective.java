@@ -15,7 +15,6 @@ import me.blackvein.quests.Quest;
 import me.blackvein.quests.Quester;
 import me.blackvein.quests.Quests;
 
-
 public class QuestMMKillObjective extends CustomObjective implements Listener {
 
 	private String strMMVer;
