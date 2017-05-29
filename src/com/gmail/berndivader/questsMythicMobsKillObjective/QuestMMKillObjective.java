@@ -25,7 +25,7 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 		addData("Objective Name");
 		addDescription("Objective Name", "Name your objective");
 		addData("Internal Mobnames");
-		addDescription("Internal Mobnames", "List of MythicMobs Types to use. Split with <,>");
+		addDescription("Internal Mobnames", "List of MythicMobs Types to use. Split with <,> or use ANY for any MythcMobs mobs.");
 		addData("Mob Level");
 		addDescription("Mob Level", "Level to match. 0 for every level, any singlevalue, or rangedvalue. Example: 2-5");
 //		addData("Notify");
@@ -70,11 +70,24 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 		for (Quest q : qp.currentQuests.keySet()) {
 			Map<?, ?> m = QuestMMKillObjective.getDatamap(p, this, q);
 			if (m == null) continue;
-			String[] kt = m.get("Internal Mobnames").toString().split(",");
-			String[] parseLvl = m.get("Mob Level").toString().split("-");
+			Object maybeKT = m.get("Internal Mobnames");
+			Object maybePARSE = m.get("Mob Level");
+			String[] kt = null;
+			String[] parseLvl = null;
+			if (maybeKT!=null && maybeKT instanceof String) {
+				kt = m.get("Internal Mobnames").toString().split(",");
+			} else {
+				kt = new String[]{"ANY"};
+			}
+			if (maybePARSE!=null && maybePARSE instanceof String) {
+				parseLvl = m.get("Mob Level").toString().split("-");
+			} else {
+				parseLvl = new String[]{"0"};
+			}
 			int level = 0; int lmin = 0;int lmax=0;
 			if (parseLvl.length==1) {
-				level = 1; lmin = Integer.valueOf(parseLvl[0]);
+				level = 1; 
+				lmin = Integer.valueOf(parseLvl[0]);
 				if (lmin==0) level = 0;
 			} else if (parseLvl.length==2) {
 				level = 2;
@@ -83,7 +96,7 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 				if (lmin>lmax) level = 0;
 			}
 			if ((level==0) || (level==1 && moblevel==lmin) || (level==2 && (lmin<=moblevel && lmax>=moblevel))) {
-				if (ArrayUtils.contains(kt, mobtype)) {
+				if (ArrayUtils.contains(kt, mobtype) || kt[0].equals("ANY")) {
 					QuestMMKillObjective.incrementObjective(p, this, 1, q);
 				}
 			}
