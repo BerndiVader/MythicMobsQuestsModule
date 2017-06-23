@@ -22,16 +22,15 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 	
 	public QuestMMKillObjective() {
 		setName("Kill MythicMobs Objective");
+		setAuthor("BerndiVader");
 		addData("Objective Name");
 		addDescription("Objective Name", "Name your objective");
 		addData("Internal Mobnames");
-		addDescription("Internal Mobnames", "List of MythicMobs Types to use. Split with <,> or use ANY for any MythcMobs mobs.");
+		addDescription("Internal Mobnames", "List of MythicMobs Types to use. Split with <,> or use ANY for any MythicMobs mobs.");
 		addData("Mob Level");
 		addDescription("Mob Level", "Level to match. 0 for every level, any singlevalue, or rangedvalue. Example: 2-5");
-//		addData("Notify");
-//		addDescription("Notify", "Show notify message? (true/false");
-//		addData("Notify Message");
-//		addDescription("Notify Message","Message shown if mob was killed. Placeholders: %remain% %amount%");
+		addData("Mob Faction");
+		addDescription("Mob Faction", "Faction of the mob to match. Split with <,> or use ANY for any mob faction");
 		setEnableCount(true);
 		setShowCount(true);
 		setCountPrompt("How many MythicMobs to kill");
@@ -48,6 +47,7 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 	public void onMythicMobDeathEvent (EntityDeathEvent e) {
 		if (!(e.getEntity().getKiller() instanceof Player)) return;
 		String mobtype = null;
+		String f = null;
 		int moblevel = 0;
 		Player p = e.getEntity().getKiller();
 		Entity bukkitentity = e.getEntity();
@@ -57,12 +57,14 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 			if (am==null) return;
 			mobtype = am.getType().getInternalName();
 			moblevel = am.getLevel();
+			if (am.hasFaction()) f = am.getFaction();
 		} else if (mmVer > 259 && mmVer < 2511) {
 			io.lumine.xikage.mythicmobs.mobs.ActiveMob am = 
 					io.lumine.xikage.mythicmobs.MythicMobs.inst().getMobManager().getMythicMobInstance(bukkitentity);
 			if (am==null) return;
 			mobtype = am.getType().getInternalName();
 			moblevel = am.getLevel();
+			if (am.hasFaction()) f = am.getFaction();
 		}
 		if (mobtype.isEmpty()) return;
 		Quester qp = Quests.getInstance().getQuester(p.getUniqueId());
@@ -72,8 +74,10 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 			if (m == null) continue;
 			Object maybeKT = m.get("Internal Mobnames");
 			Object maybePARSE = m.get("Mob Level");
+			Object maybeFaction = m.get("Mob Faction");
 			String[] kt = null;
 			String[] parseLvl = null;
+			String[] faction = null;
 			if (maybeKT!=null && maybeKT instanceof String) {
 				kt = m.get("Internal Mobnames").toString().split(",");
 			} else {
@@ -95,9 +99,16 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 				lmax = Integer.valueOf(parseLvl[1]);
 				if (lmin>lmax) level = 0;
 			}
+			if (maybeFaction!=null && maybeFaction instanceof String) {
+				faction = m.get("Mob Faction").toString().split(",");
+			} else {
+				faction = new String[]{"ANY"};
+			}
 			if ((level==0) || (level==1 && moblevel==lmin) || (level==2 && (lmin<=moblevel && lmax>=moblevel))) {
-				if (ArrayUtils.contains(kt, mobtype) || kt[0].equals("ANY")) {
-					QuestMMKillObjective.incrementObjective(p, this, 1, q);
+				if (kt[0].equals("ANY") || ArrayUtils.contains(kt, mobtype)) {
+					if (faction[0].equals("ANY") || ArrayUtils.contains(faction, f)) {
+						QuestMMKillObjective.incrementObjective(p, this, 1, q);
+					}
 				}
 			}
 		}
