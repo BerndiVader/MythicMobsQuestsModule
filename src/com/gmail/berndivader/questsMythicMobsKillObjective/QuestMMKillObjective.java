@@ -66,7 +66,7 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 			moblevel = am.getLevel();
 			if (am.hasFaction()) f = am.getFaction();
 		}
-		if (mobtype.isEmpty()) return;
+		if (mobtype == null || mobtype.isEmpty()) return;
 		Quester qp = Quests.getInstance().getQuester(p.getUniqueId());
 		if (qp.currentQuests.isEmpty()) return;
 		for (Quest q : qp.currentQuests.keySet()) {
