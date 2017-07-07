@@ -66,7 +66,7 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 			moblevel = am.getLevel();
 			if (am.hasFaction()) f = am.getFaction();
 		}
-		if (mobtype.isEmpty()) return;
+		if (mobtype == null || mobtype.isEmpty()) return;
 		Quester qp = Quests.getInstance().getQuester(p.getUniqueId());
 		if (qp.currentQuests.isEmpty()) return;
 		for (Quest q : qp.currentQuests.keySet()) {
@@ -79,12 +79,12 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 			String[] parseLvl = null;
 			String[] faction = null;
 			if (maybeKT!=null && maybeKT instanceof String) {
-				kt = ((String)maybeKT).toString().split(",");
+				kt = m.get("Internal Mobnames").toString().split(",");
 			} else {
 				kt = new String[]{"ANY"};
 			}
 			if (maybePARSE!=null && maybePARSE instanceof String) {
-				parseLvl = ((String)maybePARSE).toString().split("-");
+				parseLvl = m.get("Mob Level").toString().split("-");
 			} else {
 				parseLvl = new String[]{"0"};
 			}
@@ -100,7 +100,7 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 				if (lmin>lmax) level = 0;
 			}
 			if (maybeFaction!=null && maybeFaction instanceof String) {
-				faction = ((String)maybeFaction).toString().split(",");
+				faction = m.get("Mob Faction").toString().split(",");
 			} else {
 				faction = new String[]{"ANY"};
 			}
