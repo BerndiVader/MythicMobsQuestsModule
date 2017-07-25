@@ -31,6 +31,10 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 		addDescription("Mob Level", "Level to match. 0 for every level, any singlevalue, or rangedvalue. Example: 2-5");
 		addData("Mob Faction");
 		addDescription("Mob Faction", "Faction of the mob to match. Split with <,> or use ANY for any mob faction");
+		addData("Notifier enabled");
+		addDescription("Enable notifier", "true/false send counter msg in chat.");
+		addData("Notifier msg");
+		addDescription("Notifier msg", "Notifier message. %c% = placeholder for counter %s% placeholder for amount.");
 		setEnableCount(true);
 		setShowCount(true);
 		setCountPrompt("How many MythicMobs to kill");
@@ -47,7 +51,7 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 	public void onMythicMobDeathEvent (EntityDeathEvent e) {
 		if (!(e.getEntity().getKiller() instanceof Player)) return;
 		String mobtype = null;
-		String f = null;
+		String f = "<NONE>";
 		int moblevel = 0;
 		Player p = e.getEntity().getKiller();
 		Entity bukkitentity = e.getEntity();
@@ -75,9 +79,13 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 			Object maybeKT = m.get("Internal Mobnames");
 			Object maybePARSE = m.get("Mob Level");
 			Object maybeFaction = m.get("Mob Faction");
+			Object maybeNotifier = m.get("Notifier enabled");
+			Object maybeNotifierMsg = m.get("Notifier msg");
 			String[] kt = null;
 			String[] parseLvl = null;
 			String[] faction = null;
+			boolean notifier = false;
+			String notifierMsg = "Killed %c% of %s%";
 			if (maybeKT!=null && maybeKT instanceof String) {
 				kt = m.get("Internal Mobnames").toString().split(",");
 			} else {
@@ -87,6 +95,16 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 				parseLvl = m.get("Mob Level").toString().split("-");
 			} else {
 				parseLvl = new String[]{"0"};
+			}
+			if (maybeNotifier!=null) {
+				try {
+					notifier = Boolean.parseBoolean((String)maybeNotifier);
+				} catch (Exception ex) {
+					notifier = false;
+				}
+				if (notifier && !((String)maybeNotifierMsg).isEmpty()) {
+					notifierMsg = (String)maybeNotifierMsg;
+				}
 			}
 			int level = 0; int lmin = 0;int lmax=0;
 			if (parseLvl.length==1) {
@@ -107,10 +125,29 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 			if ((level==0) || (level==1 && moblevel==lmin) || (level==2 && (lmin<=moblevel && lmax>=moblevel))) {
 				if (kt[0].equals("ANY") || ArrayUtils.contains(kt, mobtype)) {
 					if (faction[0].equals("ANY") || ArrayUtils.contains(faction, f)) {
+						if (notifier) this.notifyQuester(qp, q, p, notifierMsg);
 						QuestMMKillObjective.incrementObjective(p, this, 1, q);
 					}
 				}
 			}
 		}
 	}
+	
+	private void notifyQuester(Quester qp, Quest q, Player p, String msg) {
+        int index = -1;
+        for (int i = 0; i < qp.getCurrentStage(q).customObjectives.size(); i++) {
+            if (qp.getCurrentStage(q).customObjectives.get(i).getName().equals(this.getName())) {
+                index = i;
+                break;
+            }
+        }
+        if (index>-1) {
+        	int total = qp.getCurrentStage(q).customObjectiveCounts.get(index);
+        	int count = 1+qp.getQuestData(q).customObjectiveCounts.get(this.getName());
+        	msg = msg.replaceAll("\\%c\\%", Integer.toString(count));
+        	msg = msg.replaceAll("\\%s\\%", Integer.toString(total));
+        	p.sendMessage(msg);
+        }
+	}
+	
 }
