@@ -18,7 +18,7 @@ import me.blackvein.quests.Quests;
 public class QuestMMKillObjective extends CustomObjective implements Listener {
 
 	private String strMMVer;
-	private int mmVer;
+	private boolean mmIsOld=false;
 	
 	public QuestMMKillObjective() {
 		setName("Kill MythicMobs Objective");
@@ -40,7 +40,8 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 		setCountPrompt("How many MythicMobs to kill");
 		setDisplay("%Objective Name%, Counter: %count%");
     	strMMVer = Bukkit.getServer().getPluginManager().getPlugin("MythicMobs").getDescription().getVersion().replaceAll("[\\D]", "");
-		mmVer = Integer.valueOf(strMMVer);
+		int v = Integer.valueOf(strMMVer);
+		this.mmIsOld=v>244&&v<252||v==2511;
 	}
 
 	public int getCounter() {
@@ -55,14 +56,14 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 		int moblevel = 0;
 		Player p = e.getEntity().getKiller();
 		Entity bukkitentity = e.getEntity();
-		if ((mmVer > 244 && mmVer < 252 || mmVer == 2511)) {
+		if (this.mmIsOld) {
 			net.elseland.xikage.MythicMobs.Mobs.ActiveMob am = 
 					net.elseland.xikage.MythicMobs.MythicMobs.inst().getAPI().getMobAPI().getMythicMobInstance(bukkitentity);
 			if (am==null) return;
 			mobtype = am.getType().getInternalName();
 			moblevel = am.getLevel();
 			if (am.hasFaction()) f = am.getFaction();
-		} else if (mmVer > 259 && mmVer < 2511) {
+		} else {
 			io.lumine.xikage.mythicmobs.mobs.ActiveMob am = 
 					io.lumine.xikage.mythicmobs.MythicMobs.inst().getMobManager().getMythicMobInstance(bukkitentity);
 			if (am==null) return;

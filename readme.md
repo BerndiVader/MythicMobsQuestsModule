@@ -2,6 +2,7 @@
 
 ### Changelog
 
+- 3.11.2017 Update: build against Quests 3.0.0 & MythicMobs 4.3.2
 - 25.7.2017 Update: added Notifier enabled and Notifier msg option.
 - 23.6.2017 Update: added Faction option. Build against Spigot 1.12, Quests 2.8.6 & MythicMobs 4.1.0
 - 29.5.2017 Update: fixed NPE's if there are no values & added "ANY" for MythicMobs mobtype.
