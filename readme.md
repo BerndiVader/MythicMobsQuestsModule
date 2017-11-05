@@ -1,7 +1,8 @@
-# Quest Addon for MythicMobs 2.4.5 or any higher version and Spigot 1.8.8 - 1.12
+# Quest Addon for MythicMobs 4.0.1 or any higher version and Spigot 1.8.8 - 1.12
 
 ### Changelog
 
+- 5.11.2017 Update: dropped support for all MythicMobs Versions < 4.0.1
 - 3.11.2017 Update: build against Quests 3.0.0 & MythicMobs 4.3.2
 - 25.7.2017 Update: added Notifier enabled and Notifier msg option.
 - 23.6.2017 Update: added Faction option. Build against Spigot 1.12, Quests 2.8.6 & MythicMobs 4.1.0

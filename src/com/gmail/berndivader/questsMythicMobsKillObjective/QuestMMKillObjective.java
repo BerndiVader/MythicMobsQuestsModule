@@ -10,6 +10,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
+import io.lumine.xikage.mythicmobs.MythicMobs;
+import io.lumine.xikage.mythicmobs.mobs.ActiveMob;
+import io.lumine.xikage.mythicmobs.mobs.MobManager;
 import me.blackvein.quests.CustomObjective;
 import me.blackvein.quests.Quest;
 import me.blackvein.quests.Quester;
@@ -18,7 +21,7 @@ import me.blackvein.quests.Quests;
 public class QuestMMKillObjective extends CustomObjective implements Listener {
 
 	private String strMMVer;
-	private boolean mmIsOld=false;
+	private MobManager mobmanager=MythicMobs.inst().getMobManager();
 	
 	public QuestMMKillObjective() {
 		setName("Kill MythicMobs Objective");
@@ -41,7 +44,6 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 		setDisplay("%Objective Name%, Counter: %count%");
     	strMMVer = Bukkit.getServer().getPluginManager().getPlugin("MythicMobs").getDescription().getVersion().replaceAll("[\\D]", "");
 		int v = Integer.valueOf(strMMVer);
-		this.mmIsOld=v>244&&v<252||v==2511;
 	}
 
 	public int getCounter() {
@@ -56,21 +58,11 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 		int moblevel = 0;
 		Player p = e.getEntity().getKiller();
 		Entity bukkitentity = e.getEntity();
-		if (this.mmIsOld) {
-			net.elseland.xikage.MythicMobs.Mobs.ActiveMob am = 
-					net.elseland.xikage.MythicMobs.MythicMobs.inst().getAPI().getMobAPI().getMythicMobInstance(bukkitentity);
-			if (am==null) return;
-			mobtype = am.getType().getInternalName();
-			moblevel = am.getLevel();
-			if (am.hasFaction()) f = am.getFaction();
-		} else {
-			io.lumine.xikage.mythicmobs.mobs.ActiveMob am = 
-					io.lumine.xikage.mythicmobs.MythicMobs.inst().getMobManager().getMythicMobInstance(bukkitentity);
-			if (am==null) return;
-			mobtype = am.getType().getInternalName();
-			moblevel = am.getLevel();
-			if (am.hasFaction()) f = am.getFaction();
-		}
+		ActiveMob am=this.mobmanager.getMythicMobInstance(bukkitentity);
+		if (am==null) return;
+		mobtype = am.getType().getInternalName();
+		moblevel = am.getLevel();
+		if (am.hasFaction()) f = am.getFaction();
 		if (mobtype == null || mobtype.isEmpty()) return;
 		Quester qp = Quests.getInstance().getQuester(p.getUniqueId());
 		if (qp.currentQuests.isEmpty()) return;
