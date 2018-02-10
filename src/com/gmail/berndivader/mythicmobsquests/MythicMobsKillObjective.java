@@ -1,9 +1,9 @@
-package com.gmail.berndivader.questsMythicMobsKillObjective;
+package com.gmail.berndivader.mythicmobsquests;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,12 +18,15 @@ import me.blackvein.quests.Quest;
 import me.blackvein.quests.Quester;
 import me.blackvein.quests.Quests;
 
-public class QuestMMKillObjective extends CustomObjective implements Listener {
+public class MythicMobsKillObjective 
+extends 
+CustomObjective 
+implements 
+Listener {
 
-	private String strMMVer;
 	private MobManager mobmanager=MythicMobs.inst().getMobManager();
 	
-	public QuestMMKillObjective() {
+	public MythicMobsKillObjective() {
 		setName("Kill MythicMobs Objective");
 		setAuthor("BerndiVader");
 		addData("Objective Name");
@@ -42,8 +45,6 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 		setShowCount(true);
 		setCountPrompt("How many MythicMobs to kill");
 		setDisplay("%Objective Name%, Counter: %count%");
-    	strMMVer = Bukkit.getServer().getPluginManager().getPlugin("MythicMobs").getDescription().getVersion().replaceAll("[\\D]", "");
-		int v = Integer.valueOf(strMMVer);
 	}
 
 	public int getCounter() {
@@ -67,38 +68,23 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 		Quester qp = Quests.getInstance().getQuester(p.getUniqueId());
 		if (qp.currentQuests.isEmpty()) return;
 		for (Quest q : qp.currentQuests.keySet()) {
-			Map<?, ?> m = QuestMMKillObjective.getDatamap(p, this, q);
+			Map<?, ?> m = MythicMobsKillObjective.getDatamap(p, this, q);
 			if (m == null) continue;
-			Object maybeKT = m.get("Internal Mobnames");
-			Object maybePARSE = m.get("Mob Level");
-			Object maybeFaction = m.get("Mob Faction");
-			Object maybeNotifier = m.get("Notifier enabled");
-			Object maybeNotifierMsg = m.get("Notifier msg");
-			String[] kt = null;
-			String[] parseLvl = null;
-			String[] faction = null;
+			Optional<String>maybeKT=Optional.ofNullable((String)m.get("Internal Mobnames"));
+			Optional<String>maybePARSE=Optional.ofNullable((String)m.get("Mob Level"));
+			Optional<String>maybeFaction=Optional.ofNullable((String)m.get("Mob Faction"));
+			Optional<String>maybeNotifier=Optional.ofNullable((String)m.get("NNotifier enabled"));
+			Optional<String>maybeNotifierMsg=Optional.ofNullable((String)m.get("Notifier msg"));
+			String[]kt=maybeKT.orElse("ANY").split(",");
+			String[]parseLvl=maybePARSE.orElse("0").split("-");
+			String[]faction=maybeFaction.orElse("ANY").split(",");
 			boolean notifier = false;
-			String notifierMsg = "Killed %c% of %s%";
-			if (maybeKT!=null && maybeKT instanceof String) {
-				kt = m.get("Internal Mobnames").toString().split(",");
-			} else {
-				kt = new String[]{"ANY"};
+			try {
+				notifier=Boolean.parseBoolean(maybeNotifier.orElse("false"));
+			} catch (Exception ex) {
+				notifier = false;
 			}
-			if (maybePARSE!=null && maybePARSE instanceof String) {
-				parseLvl = m.get("Mob Level").toString().split("-");
-			} else {
-				parseLvl = new String[]{"0"};
-			}
-			if (maybeNotifier!=null) {
-				try {
-					notifier = Boolean.parseBoolean((String)maybeNotifier);
-				} catch (Exception ex) {
-					notifier = false;
-				}
-				if (notifier && !((String)maybeNotifierMsg).isEmpty()) {
-					notifierMsg = (String)maybeNotifierMsg;
-				}
-			}
+			String notifierMsg=maybeNotifierMsg.orElse("Killed %c% of %s%");
 			int level = 0; int lmin = 0;int lmax=0;
 			if (parseLvl.length==1) {
 				level = 1; 
@@ -110,16 +96,11 @@ public class QuestMMKillObjective extends CustomObjective implements Listener {
 				lmax = Integer.valueOf(parseLvl[1]);
 				if (lmin>lmax) level = 0;
 			}
-			if (maybeFaction!=null && maybeFaction instanceof String) {
-				faction = m.get("Mob Faction").toString().split(",");
-			} else {
-				faction = new String[]{"ANY"};
-			}
-			if ((level==0) || (level==1 && moblevel==lmin) || (level==2 && (lmin<=moblevel && lmax>=moblevel))) {
+			if ((level==0) || (level==1 && moblevel==lmin) || (level==2 && (lmin<=moblevel&&moblevel<=lmax))) {
 				if (kt[0].equals("ANY") || ArrayUtils.contains(kt, mobtype)) {
 					if (faction[0].equals("ANY") || ArrayUtils.contains(faction, f)) {
 						if (notifier) this.notifyQuester(qp, q, p, notifierMsg);
-						QuestMMKillObjective.incrementObjective(p, this, 1, q);
+						MythicMobsKillObjective.incrementObjective(p, this, 1, q);
 					}
 				}
 			}

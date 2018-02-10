@@ -2,6 +2,8 @@
 
 ### Changelog
 
+- 9.02.2018 Update: added MythicMobsItem custom reward.
+- 7.02.2018 Update: some tweaks and build against Quests 3.2.4
 - 5.11.2017 Update: dropped support for all MythicMobs Versions < 4.0.1
 - 3.11.2017 Update: build against Quests 3.0.0 & MythicMobs 4.3.2
 - 25.7.2017 Update: added Notifier enabled and Notifier msg option.
