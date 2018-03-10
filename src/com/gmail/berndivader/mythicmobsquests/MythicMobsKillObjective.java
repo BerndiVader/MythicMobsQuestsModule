@@ -64,9 +64,9 @@ Listener {
 		ActiveMob am=this.mobmanager.getMythicMobInstance(bukkitentity);
 		if (am==null) return;
 		mobtype = am.getType().getInternalName();
-		if (mobtype == null || mobtype.isEmpty()) return;
 		moblevel = am.getLevel();
 		if (am.hasFaction()) f = am.getFaction();
+		if (mobtype == null || mobtype.isEmpty()) return;
 		Quester qp = quests.getQuester(p.getUniqueId());
 		if (qp.currentQuests.isEmpty()) return;
 		for (Quest q : qp.currentQuests.keySet()) {
@@ -102,7 +102,7 @@ Listener {
 				if (kt[0].toUpperCase().equals("ANY") || ArrayUtils.contains(kt, mobtype)) {
 					if (faction[0].toUpperCase().equals("ANY") || ArrayUtils.contains(faction, f)) {
 						if (notifier) this.notifyQuester(qp, q, p, notifierMsg);
-						incrementObjective(p, this, 1, q);
+							incrementObjective(p, this, 1, q);
 					}
 				}
 			}
