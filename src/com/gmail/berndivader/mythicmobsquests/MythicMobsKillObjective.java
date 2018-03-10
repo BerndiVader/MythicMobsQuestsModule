@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,7 +25,8 @@ CustomObjective
 implements 
 Listener {
 
-	private MobManager mobmanager=MythicMobs.inst().getMobManager();
+	private static Quests quests = (Quests) Bukkit.getServer().getPluginManager().getPlugin("Quests");
+	private MobManager mobmanager = MythicMobs.inst().getMobManager();
 	
 	public MythicMobsKillObjective() {
 		setName("Kill MythicMobs Objective");
@@ -62,13 +64,13 @@ Listener {
 		ActiveMob am=this.mobmanager.getMythicMobInstance(bukkitentity);
 		if (am==null) return;
 		mobtype = am.getType().getInternalName();
+		if (mobtype == null || mobtype.isEmpty()) return;
 		moblevel = am.getLevel();
 		if (am.hasFaction()) f = am.getFaction();
-		if (mobtype == null || mobtype.isEmpty()) return;
-		Quester qp = Quests.getInstance().getQuester(p.getUniqueId());
+		Quester qp = quests.getQuester(p.getUniqueId());
 		if (qp.currentQuests.isEmpty()) return;
 		for (Quest q : qp.currentQuests.keySet()) {
-			Map<?, ?> m = MythicMobsKillObjective.getDatamap(p, this, q);
+			Map<String, Object> m = getDatamap(p, this, q);
 			if (m == null) continue;
 			Optional<String>maybeKT=Optional.ofNullable((String)m.get("Internal Mobnames"));
 			Optional<String>maybePARSE=Optional.ofNullable((String)m.get("Mob Level"));
@@ -97,10 +99,10 @@ Listener {
 				if (lmin>lmax) level = 0;
 			}
 			if ((level==0) || (level==1 && moblevel==lmin) || (level==2 && (lmin<=moblevel&&moblevel<=lmax))) {
-				if (kt[0].equals("ANY") || ArrayUtils.contains(kt, mobtype)) {
-					if (faction[0].equals("ANY") || ArrayUtils.contains(faction, f)) {
+				if (kt[0].toUpperCase().equals("ANY") || ArrayUtils.contains(kt, mobtype)) {
+					if (faction[0].toUpperCase().equals("ANY") || ArrayUtils.contains(faction, f)) {
 						if (notifier) this.notifyQuester(qp, q, p, notifierMsg);
-						MythicMobsKillObjective.incrementObjective(p, this, 1, q);
+						incrementObjective(p, this, 1, q);
 					}
 				}
 			}
