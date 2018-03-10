@@ -83,10 +83,9 @@ CustomReward {
 	
 	static void reward(ArrayList<ItemStack> drops, Player p) {
 		World w=p.getWorld();
-		int i1;
 		for (ItemStack is:drops) {
 			if (is==null||is.getType()==Material.AIR) continue;
-			if ((i1=p.getInventory().firstEmpty())>-1) {
+			if ((p.getInventory().firstEmpty())>-1) {
 				p.getInventory().addItem(is.clone());
 			} else {
 				w.dropItem(p.getLocation(),is.clone());
