@@ -1,7 +1,10 @@
 # Quest Addon for MythicMobs 4.0.1 or any higher version and Spigot 1.8.8 - 1.12
 
+#### if you use Quests version below 3.2.7 use the *MythicMobsQuests285.jar* module!
+
 ### Changelog
 
+- 17.3.2018 Update: updated killobjective to Quests 3.2.7
 - 10.3.2018 Update: ignore case sensitive for mobtype and faction.
 - 9.02.2018 Update: added MythicMobsItem custom reward.
 - 7.02.2018 Update: some tweaks and build against Quests 3.2.4

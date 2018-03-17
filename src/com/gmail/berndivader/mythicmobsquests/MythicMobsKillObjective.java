@@ -56,8 +56,7 @@ Listener {
 	@EventHandler
 	public void onMythicMobDeathEvent (EntityDeathEvent e) {
 		if (!(e.getEntity().getKiller() instanceof Player)) return;
-		String mobtype = null;
-		String f = "<NONE>";
+		String mobtype=null,f="";
 		int moblevel = 0;
 		Player p = e.getEntity().getKiller();
 		Entity bukkitentity = e.getEntity();
