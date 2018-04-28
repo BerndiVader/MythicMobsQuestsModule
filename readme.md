@@ -4,6 +4,7 @@
 
 ### Changelog
 
+- 28.4.2018 Update: improved reward objective.
 - 17.3.2018 Update: updated killobjective to Quests 3.2.7
 - 10.3.2018 Update: ignore case sensitive for mobtype and faction.
 - 9.02.2018 Update: added MythicMobsItem custom reward.

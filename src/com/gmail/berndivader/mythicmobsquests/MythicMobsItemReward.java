@@ -27,7 +27,7 @@ CustomReward {
 		this.setAuthor("BerndiVader");
 		this.setRewardName("MythicMobsItem");
 		this.addData("Item");
-		this.addDescription("Item","Enter the item or droptable name.");
+		this.addDescription("Item","Enter the item or droptable name or an array splited with ,.");
 		this.addData("Amount");
 		this.addDescription("Amount","How many items. Can be ranged like 1to3");
 	}
@@ -35,32 +35,44 @@ CustomReward {
 	@Override
 	public void giveReward(Player player, Map<String, Object> data) {
 		try {
-			String s1=data.get("Item").toString();
+			String[] arr1=data.get("Item").toString().split(",");
 			String s2=data.get("Amount").toString();
-			ArrayList<ItemStack>drops=createItemStack(s1,randomRangeInt(s2),BukkitAdapter.adapt(player));
+			ArrayList<ItemStack>drops=createItemStack(arr1,randomRangeInt(s2),BukkitAdapter.adapt(player));
 			reward(drops,player);
 		} catch (Exception ex) {
 			//
 		}
 	}
 	
-	static ArrayList<ItemStack> createItemStack(String itemtype,int amount,AbstractEntity trigger) {
+	static ArrayList<ItemStack> createItemStack(String[]arr1,int amount,AbstractEntity trigger) {
 		DropManager dropmanager=MythicMobs.inst().getDropManager();
-		Optional<MythicDropTable>maybeDropTable=dropmanager.getDropTable(itemtype);
 		ArrayList<ItemStack>loot=new ArrayList<>();
-		MythicDropTable dt;
-		if (maybeDropTable.isPresent()) {
-			dt=maybeDropTable.get();
-		} else {
+		int a1=amount;
+		for(int i1=0;i1<arr1.length;i1++) {
+			String itemtype;
+			if (arr1[i1].contains(":")) {
+				String[]arr2=arr1[i1].split(":");
+				itemtype=arr2[0];
+				a1=Integer.parseInt(arr2[1]);
+			} else {
+				itemtype=arr1[i1];
+				a1=amount;
+			}
+			Optional<MythicDropTable>maybeDropTable=dropmanager.getDropTable(itemtype);
+			MythicDropTable dt;
 			List<String>droplist=new ArrayList<>();
-			droplist.add(itemtype);
-			dt=new MythicDropTable(droplist,null,null,null,null);
-		}
-//		if (bl1) Collections.shuffle(dt.strDropItems);
-		for (int a=0;a<amount;a++) {
-			dt.parseTable(null,trigger);
-			for (ItemStack is:dt.getDrops()) {
-				loot.add(is);
+			if (maybeDropTable.isPresent()) {
+				dt=maybeDropTable.get();
+			} else {
+				droplist.add(itemtype);
+				dt=new MythicDropTable(droplist,null,null,null,null);
+			}
+//			if (bl1) Collections.shuffle(dt.strDropItems);
+			for (int a=0;a<a1;a++) {
+				dt.parseTable(null,trigger);
+				for (ItemStack is:dt.getDrops()) {
+					loot.add(is);
+				}
 			}
 		}
 		return loot;
