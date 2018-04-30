@@ -47,20 +47,18 @@ CustomReward {
 	static ArrayList<ItemStack> createItemStack(String[]arr1,int amount,AbstractEntity trigger) {
 		DropManager dropmanager=MythicMobs.inst().getDropManager();
 		ArrayList<ItemStack>loot=new ArrayList<>();
-		int a1=amount;
 		for(int i1=0;i1<arr1.length;i1++) {
 			String itemtype;
 			if (arr1[i1].contains(":")) {
 				String[]arr2=arr1[i1].split(":");
 				itemtype=arr2[0];
-				a1=Integer.parseInt(arr2[1]);
+				amount=Integer.parseInt(arr2[1]);
 			} else {
 				itemtype=arr1[i1];
-				a1=amount;
 			}
 			Optional<MythicDropTable>maybeDropTable=dropmanager.getDropTable(itemtype);
-			MythicDropTable dt;
 			List<String>droplist=new ArrayList<>();
+			MythicDropTable dt;
 			if (maybeDropTable.isPresent()) {
 				dt=maybeDropTable.get();
 			} else {
@@ -68,7 +66,7 @@ CustomReward {
 				dt=new MythicDropTable(droplist,null,null,null,null);
 			}
 //			if (bl1) Collections.shuffle(dt.strDropItems);
-			for (int a=0;a<a1;a++) {
+			for (int a=0;a<amount;a++) {
 				dt.parseTable(null,trigger);
 				for (ItemStack is:dt.getDrops()) {
 					loot.add(is);
