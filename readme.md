@@ -23,6 +23,8 @@ Install (upload, extract, copy) the jar into plugins/Quests/Modules/ and restart
 
 ### Configuration Examples
 
+#### Kill MythicMobs Objective for Quests
+
 ```
 quests:
   custom1:
@@ -61,22 +63,21 @@ quests:
                 Notifier enabled: 'true'
                 Notifier msg: Killed %c% out of %s%
                 Objective Name: Kill 10 of any MythicMob
-                Internal Mobnames: MythicMobName
 ```
 
 #### Configuration Notes
 
-You **must** include all "data" variables, or the module will not work. 
+You **must** include **Mob Level, Internal Mobnames, and Objective Name,** or the module will not work. The other options can be omitted.
 
-If you want a notifier message displayed, set *Notifier enabled* to true and use *Notifier msg* to customize the message. You can use **%s%** and **%c%** as placeholder for whole amount and actual count.
+If you want the player to see a notification message tracking their progress, set **Notifier enabled** to true and use **Notifier msg** to customize the message. You can use **%s%** and **%c%** as placeholder for whole amount and actual count.
 
-If your mobs do not utilize the "level" feature of MythicMobs, you may use *Mob Level: '0'*, but it **must** be included. This field also accepts ranges, e.g. *Mob Level: '0-10'*.
+If your mobs do not utilize the "level" feature of MythicMobs, you may use **Mob Level: '0'**, but it **must** be included. This field also accepts ranges, e.g. *Mob Level: '0-10'*.
 
 If you want to filter per faction use *Mob Faction* option. Valid is **ANY** to match all factions or a single value or a arraylist eg: *faction1,faction2,faction3*
 
-The *Objective Name* is what will be displayed to the player, and may be set to whatever you like accordingly.
+The **Objective Name** is what will be displayed to the player, and may be set to whatever you like accordingly.
 
-The *Internal Mobnames* field references the names of MythicMobs as specified in your MythicMobs config files. In the above examples, such MythicMobs would be internally named SkeletalDarkKnight and MythicMobName, e.g.:
+The **Internal Mobnames** field references the names of MythicMobs as specified in your MythicMobs config files. In the above examples, such a MythicMob would be internally named SkeletalDarkKnight, e.g.:
 
 ```
 SkeletalDarkKnight:
@@ -110,3 +111,17 @@ Note that this is the **internal name** of the mob (used to initiate the YAML bl
 ```
 
 Please submit issues or pull requests as appropriate. Happy questing!
+
+#### MythicItem rewards for Quests
+
+Quests can offer MythicItems as rewards for completing them. The syntax looks like this:
+
+```
+    rewards:
+      custom-rewards:
+        req1:
+          name: MythicMobs Item Reward
+          data:
+            Item: ImbuedHelm
+            Amount: '1'
+```
