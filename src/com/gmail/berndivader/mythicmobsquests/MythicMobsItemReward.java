@@ -1,7 +1,7 @@
 package com.gmail.berndivader.mythicmobsquests;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -40,7 +40,7 @@ CustomReward {
 			ArrayList<ItemStack>drops=createItemStack(arr1,randomRangeInt(s2),BukkitAdapter.adapt(player));
 			reward(drops,player);
 		} catch (Exception ex) {
-			//
+			ex.printStackTrace();
 		}
 	}
 	
@@ -57,19 +57,17 @@ CustomReward {
 				itemtype=arr1[i1];
 			}
 			Optional<MythicDropTable>maybeDropTable=dropmanager.getDropTable(itemtype);
-			List<String>droplist=new ArrayList<>();
 			MythicDropTable dt;
 			if (maybeDropTable.isPresent()) {
 				dt=maybeDropTable.get();
+				if (dt.hasConditions()) dt.conditions=new ArrayList<>();
 			} else {
-				droplist.add(itemtype);
-				dt=new MythicDropTable(droplist,null,null,null,null);
+				dt=new MythicDropTable(Arrays.asList(itemtype),null,null,null,null);
 			}
-//			if (bl1) Collections.shuffle(dt.strDropItems);
+			dt.parseTable(trigger);
 			for (int a=0;a<amount;a++) {
-				dt.parseTable(null,trigger);
 				for (ItemStack is:dt.getDrops()) {
-					loot.add(is);
+					if (is!=null) loot.add(is);
 				}
 			}
 		}
