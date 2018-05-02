@@ -46,9 +46,10 @@ CustomRequirement {
 			ItemStack is = it.next();
 			if (is==null||is.getType().equals(Material.AIR)) continue;
 			bl1=is.getType().equals(m1);
-			bl1&=s1==null||s1.equals(NMSUtils.getMeta(is,MythicMobsItemReward.str_questitem));
-			bl1&=s2==null||is.getItemMeta().hasDisplayName()&&is.getItemMeta().getDisplayName().endsWith(s2);
-			bl1&=rd.equals(is.getAmount());
+			bl1=bl1&(s1==null||s1.equals(NMSUtils.getMeta(is,MythicMobsItemReward.str_questitem)));
+			bl1=bl1&(s2==null||is.getItemMeta().hasDisplayName()&&is.getItemMeta().getDisplayName().endsWith(s2));
+			bl1=bl1&rd.equals(is.getAmount());
+			if (bl1) break;
 		}
 		return bl1;
 	}
