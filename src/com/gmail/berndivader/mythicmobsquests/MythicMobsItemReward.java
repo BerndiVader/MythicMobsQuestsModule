@@ -33,7 +33,7 @@ CustomReward {
 	public MythicMobsItemReward() {
 		this.setName("MythicMobs Item Reward");
 		this.setAuthor("BerndiVader");
-		this.setRewardName("");
+		this.setRewardName(null);
 		this.addData("RewardName");
 		this.addDescription("RewardName","Add a reward description");
 		this.addData("Item");
@@ -51,7 +51,7 @@ CustomReward {
 			String s2=(String)data.get("Amount");
 			String s1=(String)data.getOrDefault("ItemMarker",null);
 			String s3=(String)data.getOrDefault("RewardName",null);
-			if(s3!=null) player.sendMessage(ChatColor.AQUA+s3);
+			if(s3!=null) player.sendMessage(ChatColor.GOLD+s3);
 			createAndDropItemStack(arr1,s1,randomRangeInt(s2),player);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -72,16 +72,17 @@ CustomReward {
 			}
 			MythicDropTable dt=dropmanager.getDropTable(itemtype).orElse(new MythicDropTable(Arrays.asList(itemtype),null,null,null,null));
 			if (dt.hasConditions()) dt.conditions=new ArrayList<>();
-			dt.parseTable(trigger);
 			for (int a=0;a<amount;a++) {
-				for (ItemStack i:dt.getDrops()) {
-					if (i==null||i.getType()==Material.AIR) continue;
-					ItemStack is=i.clone();
+				dt.parseTable(trigger);
+				p.giveExp(dt.getExp());
+				for (ItemStack is:dt.getDrops()) {
+					if (is==null||is.getType()==Material.AIR) continue;
 					if (s1!=null) NMSUtils.setMeta(is,str_questitem,s1);
 					if ((p.getInventory().firstEmpty())>-1) {
-						p.getInventory().addItem(is);
+						p.getInventory().addItem(is.clone());
+						p.updateInventory();
 					} else {
-						w.dropItem(p.getLocation(),is);
+						w.dropItem(p.getLocation(),is.clone());
 					}
 				}
 			}
