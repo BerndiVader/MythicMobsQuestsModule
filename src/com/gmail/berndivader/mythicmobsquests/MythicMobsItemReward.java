@@ -3,9 +3,9 @@ package com.gmail.berndivader.mythicmobsquests;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -22,31 +22,45 @@ public class MythicMobsItemReward
 extends
 CustomReward {
 	
+	static DropManager dropmanager;
+	static String str_questitem;
+	
+	static {
+		dropmanager=MythicMobs.inst().getDropManager();
+		str_questitem="MythicQuestItem";
+	}
+	
 	public MythicMobsItemReward() {
 		this.setName("MythicMobs Item Reward");
 		this.setAuthor("BerndiVader");
-		this.setRewardName("MythicMobsItem");
+		this.setRewardName("");
+		this.addData("RewardName");
+		this.addDescription("RewardName","Add a reward description");
 		this.addData("Item");
-		this.addDescription("Item","Enter the item or droptable name or an array splited with ,.");
+		this.addDescription("Item","Enter the item or droptable name or an array splited with ,");
 		this.addData("Amount");
 		this.addDescription("Amount","How many items. Can be ranged like 1to3");
+		this.addData("ItemMarker");
+		this.addDescription("ItemMarker","Mark the item as a MythicMobs Quests item");
 	}
 
 	@Override
 	public void giveReward(Player player, Map<String, Object> data) {
 		try {
-			String[] arr1=data.get("Item").toString().split(",");
-			String s2=data.get("Amount").toString();
-			ArrayList<ItemStack>drops=createItemStack(arr1,randomRangeInt(s2),BukkitAdapter.adapt(player));
-			reward(drops,player);
+			String[]arr1=data.get("Item").toString().split(",");
+			String s2=(String)data.get("Amount");
+			String s1=(String)data.getOrDefault("ItemMarker",null);
+			String s3=(String)data.getOrDefault("RewardName",null);
+			if(s3!=null) player.sendMessage(ChatColor.AQUA+s3);
+			createAndDropItemStack(arr1,s1,randomRangeInt(s2),player);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 	
-	static ArrayList<ItemStack> createItemStack(String[]arr1,int amount,AbstractEntity trigger) {
-		DropManager dropmanager=MythicMobs.inst().getDropManager();
-		ArrayList<ItemStack>loot=new ArrayList<>();
+	static void createAndDropItemStack(String[]arr1,String s1,int amount,Player p) {
+		World w=p.getWorld();
+		AbstractEntity trigger=BukkitAdapter.adapt(p);
 		for(int i1=0;i1<arr1.length;i1++) {
 			String itemtype;
 			if (arr1[i1].contains(":")) {
@@ -56,22 +70,22 @@ CustomReward {
 			} else {
 				itemtype=arr1[i1];
 			}
-			Optional<MythicDropTable>maybeDropTable=dropmanager.getDropTable(itemtype);
-			MythicDropTable dt;
-			if (maybeDropTable.isPresent()) {
-				dt=maybeDropTable.get();
-				if (dt.hasConditions()) dt.conditions=new ArrayList<>();
-			} else {
-				dt=new MythicDropTable(Arrays.asList(itemtype),null,null,null,null);
-			}
+			MythicDropTable dt=dropmanager.getDropTable(itemtype).orElse(new MythicDropTable(Arrays.asList(itemtype),null,null,null,null));
+			if (dt.hasConditions()) dt.conditions=new ArrayList<>();
 			dt.parseTable(trigger);
 			for (int a=0;a<amount;a++) {
-				for (ItemStack is:dt.getDrops()) {
-					if (is!=null) loot.add(is);
+				for (ItemStack i:dt.getDrops()) {
+					if (i==null||i.getType()==Material.AIR) continue;
+					ItemStack is=i.clone();
+					if (s1!=null) NMSUtils.setMeta(is,str_questitem,s1);
+					if ((p.getInventory().firstEmpty())>-1) {
+						p.getInventory().addItem(is);
+					} else {
+						w.dropItem(p.getLocation(),is);
+					}
 				}
 			}
 		}
-		return loot;
 	}
 	
 	static int randomRangeInt(String range) {
@@ -88,16 +102,4 @@ CustomReward {
 		} else amount=Integer.parseInt(range);
 		return amount;
 	}
-	
-	static void reward(ArrayList<ItemStack> drops, Player p) {
-		World w=p.getWorld();
-		for (ItemStack is:drops) {
-			if (is==null||is.getType()==Material.AIR) continue;
-			if ((p.getInventory().firstEmpty())>-1) {
-				p.getInventory().addItem(is.clone());
-			} else {
-				w.dropItem(p.getLocation(),is.clone());
-			}
-		}
-	}	
 }

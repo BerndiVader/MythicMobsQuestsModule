@@ -4,6 +4,8 @@
 
 ### Changelog
 
+- 02.5.2018 Update: added requirement.
+- 02.5.2018 Update: added tag argument for reward to mark the item as questitem.
 - 01.5.2018 Update: fixed droptable conditions issue in reward.
 - 28.4.2018 Update: improved reward objective.
 - 17.3.2018 Update: updated killobjective to Quests 3.2.7
