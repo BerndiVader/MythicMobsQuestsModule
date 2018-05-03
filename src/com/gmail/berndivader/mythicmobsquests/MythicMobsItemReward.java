@@ -2,6 +2,8 @@ package com.gmail.berndivader.mythicmobsquests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -14,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.adapters.AbstractEntity;
 import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;
+import io.lumine.xikage.mythicmobs.compatibility.CompatibilityManager;
 import io.lumine.xikage.mythicmobs.drops.DropManager;
 import io.lumine.xikage.mythicmobs.drops.MythicDropTable;
 import me.blackvein.quests.CustomReward;
@@ -61,6 +64,7 @@ CustomReward {
 	static void createAndDropItemStack(String[]arr1,String s1,int amount,Player p) {
 		World w=p.getWorld();
 		AbstractEntity trigger=BukkitAdapter.adapt(p);
+		HashMap<String,Integer>lm=new HashMap<>();
 		for(int i1=0;i1<arr1.length;i1++) {
 			String itemtype;
 			if (arr1[i1].contains(":")) {
@@ -75,8 +79,24 @@ CustomReward {
 			for (int a=0;a<amount;a++) {
 				dt.parseTable(trigger);
 				p.giveExp(dt.getExp());
+				lm.put("Exp: ",lm.containsKey("Exp: ")?lm.get("Exp: ")+dt.getExp():dt.getExp());
+				if (dt.heroesexp>0&&CompatibilityManager.Heroes!=null) {
+					lm.put("Heroes Exp: ",lm.containsKey("Heroes Exp: ")?lm.get("Heroes Exp: ")+dt.getHeroesExp():dt.getHeroesExp());
+					CompatibilityManager.Heroes.giveHeroesExp(null,p,dt.heroesexp);
+				}
+				if (dt.mcmmoexp>0&&CompatibilityManager.mcMMO!=null) {
+					lm.put("McMMO Exp: ",lm.containsKey("McMMO Exp: ")?lm.get("McMMO Exp: ")+dt.getMcMMOExp():dt.getMcMMOExp());
+					CompatibilityManager.mcMMO.giveExp(p,dt.getChampionsExp(),"unarmed");
+				}
+				if (dt.getMoney()>0&&MythicMobs.inst().getCompatibility().getVault().isPresent()) {
+					lm.put("Money: ",lm.containsKey("Money: ")?lm.get("Money: ")+(int)dt.getMoney():(int)dt.getMoney());
+					MythicMobs.inst().getCompatibility().getVault().get().giveMoney(p,dt.getMoney());
+				}
 				for (ItemStack is:dt.getDrops()) {
 					if (is==null||is.getType()==Material.AIR) continue;
+					String nn=is.hasItemMeta()&&is.getItemMeta().hasDisplayName()?is.getItemMeta().getDisplayName():is.getType().toString();
+					nn+=": ";
+					lm.put(nn,lm.containsKey(nn)?lm.get(nn)+is.getAmount():is.getAmount());
 					if (s1!=null) NMSUtils.setMeta(is,str_questitem,s1);
 					if ((p.getInventory().firstEmpty())>-1) {
 						p.getInventory().addItem(is.clone());
@@ -86,6 +106,13 @@ CustomReward {
 					}
 				}
 			}
+			String ll=ChatColor.DARK_GREEN+"";
+			Iterator<Map.Entry<String,Integer>>it=lm.entrySet().iterator();
+			while(it.hasNext()) {
+				Map.Entry<String,Integer>e=it.next();
+				ll+=e.getKey()+e.getValue()+" ";
+			}
+			p.sendMessage(ll);
 		}
 	}
 	

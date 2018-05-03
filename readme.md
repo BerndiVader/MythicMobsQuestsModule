@@ -4,6 +4,9 @@
 
 ### Changelog
 
+- 03.5.2018 Update: added lootlist notifier to reward.
+- 03.5.2018 Update: added money, exp, heroesxp, mcmmoxp to droptable reward.
+- 02.5.2018 Update: fixed notifier in kill objective.
 - 02.5.2018 Update: some more work on droptable issues.
 - 02.5.2018 Update: added requirement.
 - 02.5.2018 Update: added tag argument for reward to mark the item as questitem.

@@ -40,7 +40,7 @@ Listener {
 		addData("Mob Faction");
 		addDescription("Mob Faction", "Faction of the mob to match. Split with <,> or use ANY for any mob faction");
 		addData("Notifier enabled");
-		addDescription("Enable notifier", "true/false send counter msg in chat.");
+		addDescription("Notifier enabled", "true/false send counter msg in chat.");
 		addData("Notifier msg");
 		addDescription("Notifier msg", "Notifier message. %c% = placeholder for counter %s% placeholder for amount.");
 		setEnableCount(true);
@@ -74,7 +74,7 @@ Listener {
 			Optional<String>maybeKT=Optional.ofNullable((String)m.get("Internal Mobnames"));
 			Optional<String>maybePARSE=Optional.ofNullable((String)m.get("Mob Level"));
 			Optional<String>maybeFaction=Optional.ofNullable((String)m.get("Mob Faction"));
-			Optional<String>maybeNotifier=Optional.ofNullable((String)m.get("NNotifier enabled"));
+			Optional<String>maybeNotifier=Optional.ofNullable((String)m.get("Notifier enabled"));
 			Optional<String>maybeNotifierMsg=Optional.ofNullable((String)m.get("Notifier msg"));
 			String[]kt=maybeKT.orElse("ANY").split(",");
 			String[]parseLvl=maybePARSE.orElse("0").split("-");
