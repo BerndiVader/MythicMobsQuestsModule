@@ -34,14 +34,11 @@ public class NMSUtils {
     		class_CraftItemStack_getHandleField.setAccessible(true);
     		class_ItemStack_tagField = class_ItemStack.getDeclaredField("tag");
     		class_ItemStack_tagField.setAccessible(true);
+    		
     		class_NBTTagCompound_setStringMethod=class_NBTTagCompound.getMethod("setString",String.class,String.class);
             class_NBTTagCompound_getStringMethod = class_NBTTagCompound.getMethod("getString", String.class);
     		class_NBTTagCompound_removeMethod=class_NBTTagCompound.getMethod("remove",String.class);
-    	} catch (NoSuchFieldException | SecurityException e) {
-    		e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
+    	} catch (NoSuchMethodException|ClassNotFoundException|NoSuchFieldException|SecurityException e) {
 			e.printStackTrace();
 		}
     }
@@ -51,7 +48,6 @@ public class NMSUtils {
             s1=s1.replace("org.bukkit.craftbukkit.", "org.bukkit.craftbukkit."+vp);
             s1=s1.replace("net.minecraft.server.", "net.minecraft.server."+vp);
         }
-
         return NMSUtils.class.getClassLoader().loadClass(s1);
     }
     

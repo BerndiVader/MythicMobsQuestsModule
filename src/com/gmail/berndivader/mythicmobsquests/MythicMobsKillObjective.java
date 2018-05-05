@@ -101,7 +101,7 @@ Listener {
 				if (kt[0].toUpperCase().equals("ANY") || ArrayUtils.contains(kt, mobtype)) {
 					if (faction[0].toUpperCase().equals("ANY") || ArrayUtils.contains(faction, f)) {
 						if (notifier) this.notifyQuester(qp, q, p, notifierMsg);
-							incrementObjective(p, this, 1, q);
+						incrementObjective(p, this, 1, q);
 					}
 				}
 			}

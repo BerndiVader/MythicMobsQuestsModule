@@ -21,9 +21,9 @@ CustomRequirement {
 		this.addData("Material");
 		this.addDescription("Material","Item material type");
 		this.addData("ItemMarker");
-		this.addDescription("ItemMarker","ItemMarker defined by reward");
+		this.addDescription("ItemMarker","ItemMarker defined by reward or NONE");
 		this.addData("NameEnds");
-		this.addDescription("NameEnds","Item name ends with...");
+		this.addDescription("NameEnds","Item name ends with or NONE");
 		this.addData("Amount");
 		this.addDescription("Amount","How many items. Can be ranged like 1to3");
 	}
