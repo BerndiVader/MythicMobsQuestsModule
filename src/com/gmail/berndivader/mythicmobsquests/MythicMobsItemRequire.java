@@ -59,7 +59,7 @@ CustomRequirement {
 			if (bl1) break;
 		}
 		if (!bl1&&bl2) {
-			bl1=Utils.createAndDropItemStack(new String[] {s3},s2,(int)rd.getMax(),player,false,true);
+			bl1=Utils.createAndDropItemStack(new String[] {s3},s1,(int)rd.getMax(),player,false,true);
 		}
 		return bl1;
 	}

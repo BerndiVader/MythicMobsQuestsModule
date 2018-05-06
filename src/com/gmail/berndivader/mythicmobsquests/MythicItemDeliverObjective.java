@@ -39,6 +39,7 @@ Listener {
 		setName("MythicItem NPC Deliver Objective");
 		setAuthor("BerndiVader, idea Wahrheit");
 		setEnableCount(false);
+		this.setDisplay(" ");
 		this.addData("NPC IDs");
 		this.addDescription("NPC IDs","NPC ID or ID list like 1,2,3,4");
 		this.addData("Material");
@@ -64,7 +65,7 @@ Listener {
 			Map<String,Object>map=getDatamap(player,this,quest);
 			if (map==null) continue;
 			if (npcID(map,e.getNPC().getId())>-1) {
-				String[]materials=map.getOrDefault("Material","ANY").toString().split(",");
+				String[]materials=map.getOrDefault("Material","ANY").toString().toUpperCase().split(",");
 				String[]itemMarker=map.getOrDefault("ItemMarker","NONE").toString().split(",");
 				String[]nameEnds=map.getOrDefault("NameEnds","NONE").toString().split(",");
 				RangedDouble rd=new RangedDouble(map.get("Amount").toString());
@@ -77,7 +78,7 @@ Listener {
 					while(lit.hasNext()) {
 						ItemStack is=lit.next();
 						if(is==null||is.getType()==Material.AIR) continue;
-						bl1=chk(materials,itemMarker,nameEnds,rd,is);
+						if ((bl1=chk(materials,itemMarker,nameEnds,rd,is))) break;
 					}
 				}
 				if (bl1) {
