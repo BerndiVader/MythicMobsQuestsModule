@@ -48,6 +48,8 @@ Listener {
 		this.addDescription("ItemMarker","ItemMarker defined by reward or NONE");
 		this.addData("NameEnds");
 		this.addDescription("NameEnds","Item name ends with or NONE");
+		this.addData("Lore");
+		this.addDescription("Lore","Lore contains that string");
 		this.addData("Amount");
 		this.addDescription("Amount","How many items. Can be ranged like 1to3");
 		this.addData("HoldItem");
@@ -68,17 +70,18 @@ Listener {
 				String[]materials=map.getOrDefault("Material","ANY").toString().toUpperCase().split(",");
 				String[]itemMarker=map.getOrDefault("ItemMarker","NONE").toString().split(",");
 				String[]nameEnds=map.getOrDefault("NameEnds","NONE").toString().split(",");
+				String lore=map.getOrDefault("Lore","NONE").toString();
 				RangedDouble rd=new RangedDouble(map.get("Amount").toString());
 				boolean bl1=false;
 				if (map.get("HoldItem").toString().toUpperCase().equals("TRUE")) {
 					ItemStack is=player.getInventory().getItemInMainHand().clone();
-					bl1=chk(materials,itemMarker,nameEnds,rd,is);
+					bl1=chk(materials,itemMarker,nameEnds,lore,rd,is);
 				} else {
 					ListIterator<ItemStack>lit=player.getInventory().iterator();
 					while(lit.hasNext()) {
 						ItemStack is=lit.next();
 						if(is==null||is.getType()==Material.AIR) continue;
-						if ((bl1=chk(materials,itemMarker,nameEnds,rd,is))) break;
+						if ((bl1=chk(materials,itemMarker,nameEnds,lore,rd,is))) break;
 					}
 				}
 				if (bl1) {
@@ -88,12 +91,23 @@ Listener {
 		}
 	}
 	
-	static boolean chk(String[]materials,String[]itemMarker,String[]nameEnds,RangedDouble rd,ItemStack is) {
+	static boolean chk(String[]materials,String[]itemMarker,String[]nameEnds,String lore,RangedDouble rd,ItemStack is) {
 		boolean bl1=false;
 		bl1=rd.equals(is.getAmount());
 		bl1&=materials[0].equals("ANY")||arrContains(materials,is.getType().toString());
 		bl1&=itemMarker[0].equals("NONE")||arrContains(itemMarker,NMSUtils.getMeta(is,Utils.str_questitem));
 		bl1&=nameEnds[0].equals("NONE")||arrContains(nameEnds,is.hasItemMeta()&&is.getItemMeta().hasDisplayName()?is.getItemMeta().getDisplayName():"");
+		if(!lore.equals("NONE")&&is.hasItemMeta()&&is.getItemMeta().hasLore()) {
+			boolean bl3=false;
+			for(ListIterator<String>it1=is.getItemMeta().getLore().listIterator();it1.hasNext();) {
+				String str1=it1.next();
+				if ((str1.contains(lore))) {
+					bl3=true;
+					break;
+				};
+			}
+			bl1=bl3;
+		}
 		return bl1;
 	}
 	

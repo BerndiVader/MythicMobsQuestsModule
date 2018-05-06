@@ -26,6 +26,8 @@ CustomRequirement {
 		this.addDescription("ItemMarker","NBT Tag defined by reward or NONE");
 		this.addData("NameEnds");
 		this.addDescription("NameEnds","Item name ends with or NONE");
+		this.addData("Lore");
+		this.addDescription("Lore","Lore contains that string");
 		this.addData("Amount");
 		this.addDescription("Amount","How many items. Can be ranged like 1to3");
 		this.addData("Supply");
@@ -38,10 +40,12 @@ CustomRequirement {
 		String s1=(String)data.getOrDefault("ItemMarker","NONE");
 		String s2=(String)data.getOrDefault("NameEnds","NONE");
 		String s3=(String)data.getOrDefault("MythicItem","NONE");
+		String s4=(String)data.getOrDefault("Lore","NONE");
 		boolean bl2=Boolean.parseBoolean(data.getOrDefault("Supply","false").toString());
 		if (s1.toUpperCase().equals("NONE")) s1=null;
 		if (s2.toUpperCase().equals("NONE")) s2=null;
 		if (s3.toUpperCase().equals("NONE")) s3=null;
+		if (s4.toUpperCase().equals("NONE")) s4=null;
 		RangedDouble rd=new RangedDouble((String)data.get("Amount"));
 		try {
 			m1=Material.valueOf(data.get("Material").toString().toUpperCase());
@@ -56,6 +60,17 @@ CustomRequirement {
 			bl1&=s1==null||s1.equals(NMSUtils.getMeta(is,Utils.str_questitem));
 			bl1&=s2==null||is.getItemMeta().hasDisplayName()&&is.getItemMeta().getDisplayName().endsWith(s2);
 			bl1&=rd.equals(is.getAmount());
+			if (s4!=null&&is.hasItemMeta()&&is.getItemMeta().hasLore()) {
+				boolean bl3=false;
+				for(ListIterator<String>it1=is.getItemMeta().getLore().listIterator();it1.hasNext();) {
+					String str1=it1.next();
+					if ((str1.contains(s4))) {
+						bl3=true;
+						break;
+					};
+				}
+				bl1=bl3;
+			}
 			if (bl1) break;
 		}
 		if (!bl1&&bl2) {
