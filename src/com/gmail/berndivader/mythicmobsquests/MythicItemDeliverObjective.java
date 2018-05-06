@@ -64,20 +64,20 @@ Listener {
 			Map<String,Object>map=getDatamap(player,this,quest);
 			if (map==null) continue;
 			if (npcID(map,e.getNPC().getId())>-1) {
-				String[]materials=map.get("Material").toString().split(",");
-				String[]itemMarker=map.get("ItemMarker").toString().split(",");
-				String[]nameEnds=map.get("NameEnds").toString().split(",");
+				String[]materials=map.getOrDefault("Material","ANY").toString().split(",");
+				String[]itemMarker=map.getOrDefault("ItemMarker","NONE").toString().split(",");
+				String[]nameEnds=map.getOrDefault("NameEnds","NONE").toString().split(",");
 				RangedDouble rd=new RangedDouble(map.get("Amount").toString());
 				boolean bl1=false;
 				if (map.get("HoldItem").toString().toUpperCase().equals("TRUE")) {
 					ItemStack is=player.getInventory().getItemInMainHand().clone();
-					bl1=rd.equals(is.getAmount());
-					bl1&=arrContains(materials,is.getType().toString());
+					bl1=chk(materials,itemMarker,nameEnds,rd,is);
 				} else {
 					ListIterator<ItemStack>lit=player.getInventory().iterator();
 					while(lit.hasNext()) {
-						ItemStack it=lit.next();
-						if(it.getType()==Material.AIR) continue;
+						ItemStack is=lit.next();
+						if(is.getType()==Material.AIR) continue;
+						bl1=chk(materials,itemMarker,nameEnds,rd,is);
 					}
 				}
 				if (bl1) {
@@ -85,6 +85,15 @@ Listener {
 				}
 			}
 		}
+	}
+	
+	static boolean chk(String[]materials,String[]itemMarker,String[]nameEnds,RangedDouble rd,ItemStack is) {
+		boolean bl1=false;
+		bl1=rd.equals(is.getAmount());
+		bl1&=materials[0].equals("ANY")||arrContains(materials,is.getType().toString());
+		bl1&=itemMarker[0].equals("NONE")||arrContains(itemMarker,NMSUtils.getMeta(is,Utils.str_questitem));
+		bl1&=nameEnds[0].equals("NONE")||arrContains(nameEnds,is.hasItemMeta()&&is.getItemMeta().hasDisplayName()?is.getItemMeta().getDisplayName():"");
+		return bl1;
 	}
 	
 	static boolean arrContains(String[]arr1,String s1) {

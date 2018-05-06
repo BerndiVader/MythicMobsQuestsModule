@@ -91,7 +91,7 @@ public class NMSUtils {
     public static String getMeta(org.bukkit.inventory.ItemStack is,String s1) {
     	Object o1=getTag(getHandle(is));
     	if (o1==null||!class_NBTTagCompound.isInstance(o1)) return null;
-    	String s2=null;
+    	String s2="";
     	try {
     		s2=(String)class_NBTTagCompound_getStringMethod.invoke(o1,s1);
     	} catch (Throwable ex) {
