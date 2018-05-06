@@ -99,7 +99,7 @@ Listener {
 	
 	static boolean arrContains(String[]arr1,String s1) {
 		for(int i1=0;i1<arr1.length;i1++) {
-			if(arr1[i1].equals(s1)) return true;
+			if(s1.endsWith(arr1[i1])) return true;
 		}
 		return false;
 	}
