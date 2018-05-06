@@ -76,7 +76,7 @@ Listener {
 					ListIterator<ItemStack>lit=player.getInventory().iterator();
 					while(lit.hasNext()) {
 						ItemStack is=lit.next();
-						if(is.getType()==Material.AIR) continue;
+						if(is==null||is.getType()==Material.AIR) continue;
 						bl1=chk(materials,itemMarker,nameEnds,rd,is);
 					}
 				}

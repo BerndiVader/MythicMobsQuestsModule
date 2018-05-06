@@ -44,7 +44,7 @@ CustomRequirement {
 		if (s3.toUpperCase().equals("NONE")) s3=null;
 		RangedDouble rd=new RangedDouble((String)data.get("Amount"));
 		try {
-			m1=Material.valueOf((String)data.get("Material"));
+			m1=Material.valueOf(data.get("Material").toString().toUpperCase());
 		} catch (Exception ex) {
 			Bukkit.getLogger().info("Error occured while init MythicMobsItemRequirement: "+ex.getMessage());
 		}
@@ -52,7 +52,7 @@ CustomRequirement {
 		for(ListIterator<ItemStack>it=player.getInventory().iterator();it.hasNext();) {
 			ItemStack is = it.next();
 			if (is==null||is.getType().equals(Material.AIR)) continue;
-			bl1=is.getType().equals(m1);
+			bl1=is.getType()==m1;
 			bl1&=s1==null||s1.equals(NMSUtils.getMeta(is,Utils.str_questitem));
 			bl1&=s2==null||is.getItemMeta().hasDisplayName()&&is.getItemMeta().getDisplayName().endsWith(s2);
 			bl1&=rd.equals(is.getAmount());
