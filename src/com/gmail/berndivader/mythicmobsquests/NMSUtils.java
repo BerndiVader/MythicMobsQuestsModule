@@ -97,6 +97,7 @@ public class NMSUtils {
     	} catch (Throwable ex) {
     		ex.printStackTrace();
     	}
+    	System.err.println("Tag:"+s1+" Value:"+s2);
     	return s2;
     }
 
