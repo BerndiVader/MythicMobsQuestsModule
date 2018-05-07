@@ -2,8 +2,9 @@
 
 #### if you use Quests version below 3.2.7 use the *MythicMobsQuests285.jar* module!
 
-### Changelog
+#### Changelog
 
+- 07.5.2018 Update: added mythicmobsitem requirement, deliver objective & improved reward.
 - 03.5.2018 Update: added lootlist notifier to reward.
 - 03.5.2018 Update: added money, exp, heroesxp, mcmmoxp to droptable reward.
 - 02.5.2018 Update: fixed notifier in kill objective.
@@ -24,15 +25,13 @@
 - 6.5.2017 Update: build against Quests 2.7.6 & MythicMobs 4.1.0
 - 4.3.2017 Update: fixed bug that only ActiveMob livingentity instances count & added level support
 
-### Installation Instructions
+#### Installation Instructions
 
 Install (upload, extract, copy) the jar into plugins/Quests/Modules/ and restart the server.
 
-### Configuration Examples
-
 #### Kill MythicMobs Objective for Quests
 
-```
+```yaml
 quests:
   custom1:
     name: Hunt the Skeletal Dark Knight
@@ -72,7 +71,7 @@ quests:
                 Objective Name: Kill 10 of any MythicMob
 ```
 
-#### Configuration Notes
+##### Configuration Notes
 
 You **must** include **Mob Level, Internal Mobnames, and Objective Name,** or the module will not work. The other options can be omitted.
 
@@ -86,7 +85,7 @@ The **Objective Name** is what will be displayed to the player, and may be set t
 
 The **Internal Mobnames** field references the names of MythicMobs as specified in your MythicMobs config files. In the above examples, such a MythicMob would be internally named SkeletalDarkKnight, e.g.:
 
-```
+```yaml
 SkeletalDarkKnight:
   Type: WITHER_SKELETON
   Display: '&dSkeletal Dark Knight'
@@ -96,7 +95,7 @@ SkeletalDarkKnight:
 
 Note that this is the **internal name** of the mob (used to initiate the YAML block), *not* its *Display Name* or *Type*. This field also supports multiple options, separated by commas, or ANY, e.g.:
 
-```
+```yaml
   custom3:
     name: Kill various MythicMobs
     ask-message: Will you kill 10 MythicMobs of any kind for us?
@@ -117,18 +116,106 @@ Note that this is the **internal name** of the mob (used to initiate the YAML bl
                 Objective Name: Kill 10 of any MythicMob
 ```
 
-Please submit issues or pull requests as appropriate. Happy questing!
-
 #### MythicItem rewards for Quests
 
-Quests can offer MythicItems as rewards for completing them. The syntax looks like this:
+Quests can offer MythicItems as rewards for completing them. Plus add special tags to the item so that they 
+can be identified as mythicmobs- and, or quest items. Syntax example:
 
-```
+```yaml
     rewards:
       custom-rewards:
         req1:
           name: MythicMobs Item Reward
           data:
-            Item: ImbuedHelm
+            Item: MMDIRT
+            Notify: 'true'
+            RewardName: You received a MythicMobs item
             Amount: '1'
+            Stackable: 'false'
+            ItemMarker: MMDIRT
 ```
+
+##### Configuration Notes
+
+The mythicitem reward uses the following data options and all attributes are required:
+
++ **Item:** The internal mythicmobs itemname or droptable name. Can be an array like item1,item2,droptable1
++ **Notifiy:** *true/false* If true the quester recieve a msg with a list of all items.
++ **RewardName:** Message displayed at reward.
++ **Amount:** Amount. In case of droptable how many times the droptable is parsed.
++ **Stackable:** *true/false* if true items are not stackable.
++ **ItemMarker:** Add a NBT tag to the item to have it marked. Recommended is to use the mythicmobs internal item name. This tag is used in *deliver objective* and *customrequire* to identify the item as an mythicmobs item. Its also good for refer to the mythicmobs item. So if you change the item in the mythicmobs yaml you dont need to change all the quests if you use the ItemMarker instead of material, lore and displayname.
+
+#### MythicItem requirement
+
+Quests require an special item to continue. Check the item with Lore, Material, DisplayName or just simple by an Tag refering to a mythicmobs item.
+
+##### Configuration Notes
+
+If the item was created by reward or requirement itself or by mythicmobsext's dropmythicitem mechanic you can use  ItemMarker to refer to a mythicmobs item. Alternatively use Material, DisplayName and Lore. All attributes and options are required:
+
++ **Lore:** If one of the items lore lines contains this text.
++ **Amount:** A ranged value, can be >0 or <3 or 1to4 or just a single number. *Note if Supply is used its recommended to use single numbers or atleast something with >0*
++ **Supply:** *true/false* If true the requirement supplies the quester if the required mythicmobsitem.
++ **Material:** The items material name or *ANY* for all materials match.
++ **NameEnds:** String the items displayname ends with or *NONE*.
++ **MythicItem:** The internal name of the mythicmobs item.
++ **ItemMarker:** The name the item will be tagged with. Recommended is to just put in the internal mythicitem name.
+
+```yaml
+    requirements:
+      custom-requirements:
+        req1:
+          name: MythicMobs Item Require
+          data:
+            Lore: NONE
+            Amount: '1'
+            Supply: 'true'
+            Material: ANY
+            NameEnds: NONE
+            MythicItem: MMDIRT
+            ItemMarker: MMDIRT
+      fail-requirement-message: Go and find the MMDIRT item!
+```
+
+#### MythicItem NPC Deliver Objective
+
+Quests stages can be completed by deliver an item or an MythicMobs item to an citizens NPC. Requires citizens plugin to be installed.
+
+##### Configuration Notes
+
+If the item or items were created by reward, requirement or mythicmobsext's dropmythicitem mechanic you can use ItemMarker to refer to the mythicmobs item. Alternativly use Material, DisplayName and Lore. All attributes and options are required:
+
++ **NPC IDs:** The integer id of the citizens NPC or an arry like 1,2,3,4
++ **Lore:** Text that needs to be contained in one of the items lore lines or ANY.
++ **HoldItem:** *true/false* If true the item the player need to hold the item to complete the objective.
++ **Amount:** The amount the player needs. Like >0 or 1to4 or <20 or just a single number like 1 for exact match.
++ **Material:** The items material name or ANY.
++ **NameEnds:** DisplayName of the item ends with this string or NONE.
++ **TimeLimit:** Unused
++ **ItemMarker:** The nbt tag the item was marked with reward, require or with mythicmobsext's dropmythicitem mechanic. Usually its used to refer to the internal mythicmobs item name or NONE if no tag is used.
+
+This example use the ItemMarker to refer to a mythicmobsitem. There is no need to use material, lore or displayname.
+
+```yaml
+    stages:
+      ordered:
+        '1':
+          custom-objectives:
+            custom1:
+              name: MythicItem NPC Deliver Objective
+              count: -999
+              data:
+                NPC IDs: '0'
+                Lore: ANY
+                HoldItem: 'true'
+                Amount: '>0'
+                Material: ANY
+                NameEnds: NONE
+                TimeLimit: '-1'
+                ItemMarker: MMDIRT
+          start-message: Bring the questitem MMDIRT to my friend bubu
+          complete-message: Thank you for your help!
+```
+
+Please submit issues or pull requests as appropriate. Happy questing!

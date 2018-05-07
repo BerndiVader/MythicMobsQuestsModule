@@ -49,7 +49,7 @@ Listener {
 		this.addData("NameEnds");
 		this.addDescription("NameEnds","Item name ends with or NONE");
 		this.addData("Lore");
-		this.addDescription("Lore","Lore contains that string");
+		this.addDescription("Lore","Lore contains that string or NONE");
 		this.addData("Amount");
 		this.addDescription("Amount","How many items. Can be ranged like 1to3");
 		this.addData("HoldItem");
@@ -112,8 +112,10 @@ Listener {
 	}
 	
 	static boolean arrContains(String[]arr1,String s1) {
-		for(int i1=0;i1<arr1.length;i1++) {
-			if(s1.endsWith(arr1[i1])) return true;
+		if (s1!=null&&arr1!=null) {
+			for(int i1=0;i1<arr1.length;i1++) {
+				if(s1.endsWith(arr1[i1])) return true;
+			}
 		}
 		return false;
 	}

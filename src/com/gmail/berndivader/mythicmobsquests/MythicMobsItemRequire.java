@@ -21,13 +21,13 @@ CustomRequirement {
 		this.addData("MythicItem");
 		this.addDescription("MythicItem","Internal MythicItem name");
 		this.addData("Material");
-		this.addDescription("Material","Item material type");
+		this.addDescription("Material","Item material type or ANY");
 		this.addData("ItemMarker");
 		this.addDescription("ItemMarker","NBT Tag defined by reward or NONE");
 		this.addData("NameEnds");
 		this.addDescription("NameEnds","Item name ends with or NONE");
 		this.addData("Lore");
-		this.addDescription("Lore","Lore contains that string");
+		this.addDescription("Lore","Lore contains that string or NONE");
 		this.addData("Amount");
 		this.addDescription("Amount","How many items. Can be ranged like 1to3");
 		this.addData("Supply");
@@ -47,16 +47,19 @@ CustomRequirement {
 		if (s3.toUpperCase().equals("NONE")) s3=null;
 		if (s4.toUpperCase().equals("NONE")) s4=null;
 		RangedDouble rd=new RangedDouble((String)data.get("Amount"));
-		try {
-			m1=Material.valueOf(data.get("Material").toString().toUpperCase());
-		} catch (Exception ex) {
-			Bukkit.getLogger().info("Error occured while init MythicMobsItemRequirement: "+ex.getMessage());
+		String str2=data.get("Material").toString().toUpperCase();
+		if (!str2.equals("ANY")) {
+			try {
+				m1=Material.valueOf(str2);
+			} catch (Exception ex) {
+				Bukkit.getLogger().info("Error occured while init MythicMobsItemRequirement: "+ex.getMessage());
+			}
 		}
 		boolean bl1=false;
 		for(ListIterator<ItemStack>it=player.getInventory().iterator();it.hasNext();) {
 			ItemStack is = it.next();
 			if (is==null||is.getType().equals(Material.AIR)) continue;
-			bl1=is.getType()==m1;
+			bl1=m1==null||is.getType()==m1;
 			bl1&=s1==null||s1.equals(NMSUtils.getMeta(is,Utils.str_questitem));
 			bl1&=s2==null||is.getItemMeta().hasDisplayName()&&is.getItemMeta().getDisplayName().endsWith(s2);
 			bl1&=rd.equals(is.getAmount());

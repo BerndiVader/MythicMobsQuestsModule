@@ -16,7 +16,7 @@ CustomReward {
 		this.setAuthor("BerndiVader");
 		this.setRewardName("MythicMobs Item Reward");
 		this.addData("RewardName");
-		this.addDescription("RewardName","Add a reward description");
+		this.addDescription("RewardName","Reward message send to quester on reward");
 		this.addData("Item");
 		this.addDescription("Item","Enter the item or droptable name or an array splited with ,");
 		this.addData("Amount");
