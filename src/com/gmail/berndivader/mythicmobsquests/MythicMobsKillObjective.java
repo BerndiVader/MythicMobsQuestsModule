@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.mobs.ActiveMob;
@@ -33,6 +34,10 @@ Listener {
 		setAuthor("BerndiVader");
 		addData("Objective Name");
 		addDescription("Objective Name", "Name your objective");
+		this.addData("Conditions");
+		this.addDescription("Conditions","Enter a mythicmobs conditions for npc");
+		this.addData("TargetConditions");
+		this.addDescription("TargetConditions","Enter a mythicmobs conditions for player");
 		addData("Internal Mobnames");
 		addDescription("Internal Mobnames", "List of MythicMobs Types to use. Split with <,> or use ANY for any MythicMobs mobs.");
 		addData("Mob Level");
@@ -58,15 +63,15 @@ Listener {
 		if (!(e.getEntity().getKiller() instanceof Player)) return;
 		String mobtype=null,f="";
 		int moblevel = 0;
-		Player p = e.getEntity().getKiller();
-		Entity bukkitentity = e.getEntity();
-		ActiveMob am=this.mobmanager.getMythicMobInstance(bukkitentity);
+		final Player p = e.getEntity().getKiller();
+		final Entity bukkitEntity = e.getEntity();
+		final ActiveMob am=this.mobmanager.getMythicMobInstance(bukkitEntity);
 		if (am==null) return;
 		mobtype = am.getType().getInternalName();
 		moblevel = am.getLevel();
 		if (am.hasFaction()) f = am.getFaction();
 		if (mobtype == null || mobtype.isEmpty()) return;
-		Quester qp = quests.getQuester(p.getUniqueId());
+		final Quester qp = quests.getQuester(p.getUniqueId());
 		if (qp.currentQuests.isEmpty()) return;
 		for (Quest q : qp.currentQuests.keySet()) {
 			Map<String, Object> m = getDatamap(p, this, q);
@@ -79,12 +84,13 @@ Listener {
 			String[]kt=maybeKT.orElse("ANY").split(",");
 			String[]parseLvl=maybePARSE.orElse("0").split("-");
 			String[]faction=maybeFaction.orElse("ANY").split(",");
-			boolean notifier = false;
-			try {
-				notifier=Boolean.parseBoolean(maybeNotifier.orElse("false"));
-			} catch (Exception ex) {
-				notifier = false;
-			}
+			String cC=m.getOrDefault("Conditions","NONE").toString();
+			String tC=m.getOrDefault("TargetConditions","NONE").toString();
+			if (cC.toUpperCase().equals("NONE")) cC=null;
+			if (tC.toUpperCase().equals("NONE")) tC=null;
+			final boolean useConditions=cC!=null||tC!=null;
+			final MythicCondition mc=useConditions?new MythicCondition(bukkitEntity,p,cC,tC):null;
+			final boolean notifier=Boolean.parseBoolean(maybeNotifier.orElse("FALSE"));
 			String notifierMsg=maybeNotifierMsg.orElse("Killed %c% of %s%");
 			int level = 0; int lmin = 0;int lmax=0;
 			if (parseLvl.length==1) {
@@ -100,8 +106,20 @@ Listener {
 			if ((level==0) || (level==1 && moblevel==lmin) || (level==2 && (lmin<=moblevel&&moblevel<=lmax))) {
 				if (kt[0].toUpperCase().equals("ANY") || ArrayUtils.contains(kt, mobtype)) {
 					if (faction[0].toUpperCase().equals("ANY") || ArrayUtils.contains(faction, f)) {
-						if (notifier) this.notifyQuester(qp, q, p, notifierMsg);
-						incrementObjective(p, this, 1, q);
+						if (useConditions&&mc!=null) {
+							new BukkitRunnable() {
+								@Override
+								public void run() {
+									if(mc.check()) {
+										if (notifier) MythicMobsKillObjective.this.notifyQuester(qp, q, p, notifierMsg);
+										MythicMobsKillObjective.this.incrementObjective(p,MythicMobsKillObjective.this,1,q);
+									}
+								}
+							}.runTaskLater(MythicMobsKillObjective.quests,5);
+						} else {
+							if (notifier) this.notifyQuester(qp, q, p, notifierMsg);
+							incrementObjective(p, this, 1, q);
+						}
 					}
 				}
 			}

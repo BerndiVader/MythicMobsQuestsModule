@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.drops.DropManager;
@@ -29,6 +30,7 @@ Listener {
 	static Quests quests; 
 	static DropManager dropmanager;
 	static CitizensAPI citizens;
+	boolean bb;
 	
 	static {
 		quests=(Quests)Bukkit.getPluginManager().getPlugin("Quests");
@@ -42,6 +44,10 @@ Listener {
 		this.setDisplay(" ");
 		this.addData("NPC IDs");
 		this.addDescription("NPC IDs","NPC ID or ID list like 1,2,3,4");
+		this.addData("Conditions");
+		this.addDescription("Conditions","Enter a mythicmobs conditions for npc");
+		this.addData("TargetConditions");
+		this.addDescription("TargetConditions","Enter a mythicmobs conditions for player");
 		this.addData("Material");
 		this.addDescription("Material","Item material type or ANY");
 		this.addData("ItemMarker");
@@ -59,10 +65,10 @@ Listener {
 	}
 	
 	@EventHandler
-	public void onNPCInteract(NPCRightClickEvent e) {
+	synchronized public void onNPCInteract(NPCRightClickEvent e) {
 		if (e.isCancelled()||e.getClicker().isConversing()) return;
-		Player player=e.getClicker();
-		Quester quester=quests.getQuester(player.getUniqueId());
+		final Player player=e.getClicker();
+		final Quester quester=quests.getQuester(player.getUniqueId());
 		for (Quest quest:quester.currentQuests.keySet()) {
 			Map<String,Object>map=getDatamap(player,this,quest);
 			if (map==null) continue;
@@ -72,6 +78,12 @@ Listener {
 				String[]nameEnds=map.getOrDefault("NameEnds","NONE").toString().split(",");
 				String lore=map.getOrDefault("Lore","NONE").toString();
 				RangedDouble rd=new RangedDouble(map.get("Amount").toString());
+				String cC=map.getOrDefault("Conditions","NONE").toString();
+				String tC=map.getOrDefault("TargetConditions","NONE").toString();
+				if (cC.toUpperCase().equals("NONE")) cC=null;
+				if (tC.toUpperCase().equals("NONE")) tC=null;
+				boolean useConditions=cC!=null||tC!=null;
+				final MythicCondition mc=useConditions?new MythicCondition(e.getNPC().getEntity(),player,cC,tC):null;
 				boolean bl1=false;
 				if (map.get("HoldItem").toString().toUpperCase().equals("TRUE")) {
 					ItemStack is=player.getInventory().getItemInMainHand().clone();
@@ -84,8 +96,19 @@ Listener {
 						if ((bl1=chk(materials,itemMarker,nameEnds,lore,rd,is))) break;
 					}
 				}
-				if (bl1) {
-					quester.finishObjective(quest,"customObj",null,null,null,null,null,null,null,null,null,this);
+				this.bb=bl1;
+				if (mc!=null) {
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							bb&=mc.check();
+							if (bb) quester.finishObjective(quest,"customObj",null,null,null,null,null,null,null,null,null,MythicItemDeliverObjective.this);
+						}
+					}.runTaskLater(MythicItemDeliverObjective.quests,1);
+				} else {
+					if (bl1) {
+						quester.finishObjective(quest,"customObj",null,null,null,null,null,null,null,null,null,this);
+					}
 				}
 			}
 		}

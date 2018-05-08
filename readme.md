@@ -4,6 +4,7 @@
 
 #### Changelog
 
+- 08.5.2018 Update: added Conditions & TargetConditions to the objectives.
 - 07.5.2018 Update: added mythicmobsitem requirement, deliver objective & improved reward.
 - 03.5.2018 Update: added lootlist notifier to reward.
 - 03.5.2018 Update: added money, exp, heroesxp, mcmmoxp to droptable reward.
@@ -34,23 +35,23 @@ Install (upload, extract, copy) the jar into plugins/Quests/Modules/ and restart
 ```yaml
 quests:
   custom1:
-    name: Hunt the Skeletal Dark Knight
-    ask-message: Will you help us kill a Skeletal Dark Knight?
-    finish-message: Thank you for your help!
+    name: Hunt mobs equipped only with an wooden axe!
+    ask-message: You have to be naked and equipped only with an wooden axe!
+    finish-message: You are a real hero!
     stages:
       ordered:
         '1':
           custom-objectives:
             custom1:
               name: Kill MythicMobs Objective
-              count: 1
+              count: 3
               data:
                 Mob Level: '0'
                 Mob Faction: ANY
                 Notifier enabled: 'true'
                 Notifier msg: Killed %c% out of %s%
-                Objective Name: Kill a Skeletal Dark Knight
-                Internal Mobnames: SkeletalDarkKnight
+                Objective Name: Naked Mob Hunt
+                Internal Mobnames: ANY
   custom2:
     name: Kill 10 of these MythicMobs
     ask-message: Will you kill 10 of these MythicMobs for us?
