@@ -22,8 +22,6 @@ CustomRequirement {
 		this.addDescription("MythicItem","Internal MythicItem name");
 		this.addData("Material");
 		this.addDescription("Material","Item material type or ANY");
-		this.addData("ItemMarker");
-		this.addDescription("ItemMarker","NBT Tag defined by reward or NONE");
 		this.addData("NameEnds");
 		this.addDescription("NameEnds","Item name ends with or NONE");
 		this.addData("Lore");
@@ -32,16 +30,21 @@ CustomRequirement {
 		this.addDescription("Amount","How many items. Can be ranged like 1to3");
 		this.addData("Supply");
 		this.addDescription("Supply","Supply player with missing item (true/false)");
+		this.addData("RemoveItem");
+		this.addDescription("RemoveItem","Remove the required item from the players inventory (true/false)");
+		this.addData("HoldItem");
+		this.addDescription("HoldItem","Player need to hold the item (true/false)");
 	}
 
 	@Override
 	public boolean testRequirement(Player player, Map<String, Object> data) {
 		Material m1=null;
-		String s1=(String)data.getOrDefault("ItemMarker","NONE");
 		String s2=(String)data.getOrDefault("NameEnds","NONE");
 		String s3=(String)data.getOrDefault("MythicItem","NONE");
 		String s4=(String)data.getOrDefault("Lore","NONE");
+		String s1=s3;
 		boolean bl2=Boolean.parseBoolean(data.getOrDefault("Supply","false").toString());
+		boolean remove=data.getOrDefault("RemoveItem","FALSE").toString().toUpperCase().equals("TRUE");
 		if (s1.toUpperCase().equals("NONE")) s1=null;
 		if (s2.toUpperCase().equals("NONE")) s2=null;
 		if (s3.toUpperCase().equals("NONE")) s3=null;
@@ -74,10 +77,19 @@ CustomRequirement {
 				}
 				bl1=bl3;
 			}
-			if (bl1) break;
+			if (bl1) {
+				if (remove) {
+					ItemStack is1=new ItemStack(is);
+					int i1=is1.getAmount()-(int)rd.getMin();
+					if (i1<=0) i1=0;
+					is1.setAmount(i1);
+					it.set(new ItemStack(is1));
+				}
+				break;
+			}
 		}
 		if (!bl1&&bl2) {
-			bl1=Utils.createAndDropItemStack(new String[] {s3},s1,(int)rd.getMax(),player,false,true);
+			bl1=Utils.createAndDropItemStack(new String[] {s3},s1,(int)rd.getMin(),player,false,true);
 		}
 		return bl1;
 	}

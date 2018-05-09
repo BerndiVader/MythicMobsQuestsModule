@@ -30,7 +30,6 @@ Listener {
 	static Quests quests; 
 	static DropManager dropmanager;
 	static CitizensAPI citizens;
-	boolean bb;
 	
 	static {
 		quests=(Quests)Bukkit.getPluginManager().getPlugin("Quests");
@@ -50,16 +49,18 @@ Listener {
 		this.addDescription("TargetConditions","Enter a mythicmobs conditions for player");
 		this.addData("Material");
 		this.addDescription("Material","Item material type or ANY");
-		this.addData("ItemMarker");
-		this.addDescription("ItemMarker","ItemMarker defined by reward or NONE");
+		this.addData("MythicItem");
+		this.addDescription("MythicItem","MythicMobs internal item name");
 		this.addData("NameEnds");
 		this.addDescription("NameEnds","Item name ends with or NONE");
 		this.addData("Lore");
 		this.addDescription("Lore","Lore contains that string or NONE");
 		this.addData("Amount");
-		this.addDescription("Amount","How many items. Can be ranged like 1to3");
+		this.addDescription("Amount","The required size of the stack. Like 10to64");
 		this.addData("HoldItem");
 		this.addDescription("HoldItem","Player need to hold the item (true/false)");
+		this.addData("RemoveItem");
+		this.addDescription("RemoveItem","Remove the delivered item from the players inventory (true/false)");
 		this.addData("TimeLimit");
 		this.addDescription("TimeLimit","Limited time in seconds or -1 for unlimit");
 	}
@@ -74,73 +75,54 @@ Listener {
 			if (map==null) continue;
 			if (npcID(map,e.getNPC().getId())>-1) {
 				String[]materials=map.getOrDefault("Material","ANY").toString().toUpperCase().split(",");
-				String[]itemMarker=map.getOrDefault("ItemMarker","NONE").toString().split(",");
+				String[]itemMarker=map.getOrDefault("MythicItem","NONE").toString().split(",");
 				String[]nameEnds=map.getOrDefault("NameEnds","NONE").toString().split(",");
 				String lore=map.getOrDefault("Lore","NONE").toString();
 				RangedDouble rd=new RangedDouble(map.get("Amount").toString());
 				String cC=map.getOrDefault("Conditions","NONE").toString();
 				String tC=map.getOrDefault("TargetConditions","NONE").toString();
+				boolean remove=map.getOrDefault("RemoveItem","FALSE").toString().toUpperCase().equals("TRUE");
+				boolean holdItem=map.getOrDefault("HoldItem","FALSE").toString().toUpperCase().equals("TRUE");
 				if (cC.toUpperCase().equals("NONE")) cC=null;
 				if (tC.toUpperCase().equals("NONE")) tC=null;
 				boolean useConditions=cC!=null||tC!=null;
 				final MythicCondition mc=useConditions?new MythicCondition(e.getNPC().getEntity(),player,cC,tC):null;
 				boolean bl1=false;
-				if (map.get("HoldItem").toString().toUpperCase().equals("TRUE")) {
-					ItemStack is=player.getInventory().getItemInMainHand().clone();
-					bl1=chk(materials,itemMarker,nameEnds,lore,rd,is);
+				ListIterator<ItemStack>lit=player.getInventory().iterator();
+				ItemStack is=null;
+				if (holdItem) {
+					is=player.getInventory().getItemInMainHand().clone();
+					bl1=Utils.chk(materials,itemMarker,nameEnds,lore,rd,is);
 				} else {
-					ListIterator<ItemStack>lit=player.getInventory().iterator();
 					while(lit.hasNext()) {
-						ItemStack is=lit.next();
+						is=lit.next();
 						if(is==null||is.getType()==Material.AIR) continue;
-						if ((bl1=chk(materials,itemMarker,nameEnds,lore,rd,is))) break;
+						if ((bl1=Utils.chk(materials,itemMarker,nameEnds,lore,rd,is))) break;
 					}
 				}
-				this.bb=bl1;
-				if (mc!=null) {
+				final ItemStack fis=is;
+				final boolean bb=bl1;
+				if (useConditions&&mc!=null) {
 					new BukkitRunnable() {
 						@Override
 						public void run() {
-							bb&=mc.check();
-							if (bb) quester.finishObjective(quest,"customObj",null,null,null,null,null,null,null,null,null,MythicItemDeliverObjective.this);
+							boolean bl1=bb;
+							if (bl1&=mc.check()) {
+								if (remove) {
+									if (remove) Utils.removeItemstackAmount(holdItem,player,rd,fis,lit);
+								}
+								quester.finishObjective(quest,"customObj",null,null,null,null,null,null,null,null,null,MythicItemDeliverObjective.this);
+							}
 						}
 					}.runTaskLater(MythicItemDeliverObjective.quests,1);
 				} else {
 					if (bl1) {
+						if (remove) Utils.removeItemstackAmount(holdItem,player,rd,fis,lit);
 						quester.finishObjective(quest,"customObj",null,null,null,null,null,null,null,null,null,this);
 					}
 				}
 			}
 		}
-	}
-	
-	static boolean chk(String[]materials,String[]itemMarker,String[]nameEnds,String lore,RangedDouble rd,ItemStack is) {
-		boolean bl1=false;
-		bl1=rd.equals(is.getAmount());
-		bl1&=materials[0].equals("ANY")||arrContains(materials,is.getType().toString());
-		bl1&=itemMarker[0].equals("NONE")||arrContains(itemMarker,NMSUtils.getMeta(is,Utils.str_questitem));
-		bl1&=nameEnds[0].equals("NONE")||arrContains(nameEnds,is.hasItemMeta()&&is.getItemMeta().hasDisplayName()?is.getItemMeta().getDisplayName():"");
-		if(!lore.equals("NONE")&&is.hasItemMeta()&&is.getItemMeta().hasLore()) {
-			boolean bl3=false;
-			for(ListIterator<String>it1=is.getItemMeta().getLore().listIterator();it1.hasNext();) {
-				String str1=it1.next();
-				if ((str1.contains(lore))) {
-					bl3=true;
-					break;
-				};
-			}
-			bl1=bl3;
-		}
-		return bl1;
-	}
-	
-	static boolean arrContains(String[]arr1,String s1) {
-		if (s1!=null&&arr1!=null) {
-			for(int i1=0;i1<arr1.length;i1++) {
-				if(s1.endsWith(arr1[i1])) return true;
-			}
-		}
-		return false;
 	}
 	
 	static int npcID(Map<String,Object>map,int id) {

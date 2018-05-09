@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -20,6 +21,7 @@ import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;
 import io.lumine.xikage.mythicmobs.compatibility.CompatibilityManager;
 import io.lumine.xikage.mythicmobs.drops.DropManager;
 import io.lumine.xikage.mythicmobs.drops.MythicDropTable;
+import io.lumine.xikage.mythicmobs.util.types.RangedDouble;
 
 public class Utils {
 	
@@ -116,5 +118,51 @@ public class Utils {
 		} else amount=Integer.parseInt(range);
 		return amount;
 	}	
+	
+	public static boolean chk(String[]materials,String[]itemMarker,String[]nameEnds,String lore,RangedDouble rd,ItemStack is) {
+		boolean bl1=false;
+		bl1=rd.equals(is.getAmount());
+		bl1&=materials[0].equals("ANY")||arrContains(materials,is.getType().toString());
+		bl1&=itemMarker[0].equals("NONE")||arrContains(itemMarker,NMSUtils.getMeta(is,Utils.str_questitem));
+		bl1&=nameEnds[0].equals("NONE")||arrContains(nameEnds,is.hasItemMeta()&&is.getItemMeta().hasDisplayName()?is.getItemMeta().getDisplayName():"");
+		if(!lore.equals("NONE")&&is.hasItemMeta()&&is.getItemMeta().hasLore()) {
+			boolean bl3=false;
+			for(ListIterator<String>it1=is.getItemMeta().getLore().listIterator();it1.hasNext();) {
+				String str1=it1.next();
+				if ((str1.contains(lore))) {
+					bl3=true;
+					break;
+				};
+			}
+			bl1&=bl3;
+		}
+		return bl1;
+	}
+	
+	public static boolean arrContains(String[]arr1,String s1) {
+		if (s1!=null&&arr1!=null) {
+			for(int i1=0;i1<arr1.length;i1++) {
+				if(s1.endsWith(arr1[i1])) return true;
+			}
+		}
+		return false;
+	}
+	
+	static void removeItemstackAmount(boolean holdItem,Player player,RangedDouble rd,ItemStack fis,ListIterator<ItemStack>lit) {
+		if (holdItem) {
+			ItemStack is1=new ItemStack(player.getInventory().getItemInMainHand());
+			int i1=is1.getAmount()-(int)rd.getMin();
+			if (i1<=0) i1=0;
+			is1.setAmount(i1);
+			player.getInventory().setItemInMainHand(new ItemStack(is1));
+		} else {
+			ItemStack is1=new ItemStack(fis);
+			int i1=is1.getAmount()-(int)rd.getMin();
+			if (i1<=0) i1=0;
+			is1.setAmount(i1);
+			lit.set(new ItemStack(is1));;
+		}
+	}
+	
 	
 }

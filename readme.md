@@ -4,6 +4,7 @@
 
 #### Changelog
 
+- 09.5.2018 Update: added remove item option to deliver and require. Changed ItemMarker to MythicItem in deliver.
 - 08.5.2018 Update: added Conditions & TargetConditions to the objectives.
 - 07.5.2018 Update: added mythicmobsitem requirement, deliver objective & improved reward.
 - 03.5.2018 Update: added lootlist notifier to reward.
@@ -35,9 +36,12 @@ Install (upload, extract, copy) the jar into plugins/Quests/Modules/ and restart
 ```yaml
 quests:
   custom1:
-    name: Hunt mobs equipped only with an wooden axe!
-    ask-message: You have to be naked and equipped only with an wooden axe!
-    finish-message: You are a real hero!
+    name: For the though guys
+    npc-giver-id: 0
+    redo-delay: 3
+    ask-message: Kill some mobs while being naked and just equipped with an wooden_axe!
+    finish-message: WOW!! You're truly a tough guy!
+    gui-display: name-DIRT:amount-1
     stages:
       ordered:
         '1':
@@ -48,10 +52,12 @@ quests:
               data:
                 Mob Level: '0'
                 Mob Faction: ANY
-                Notifier enabled: 'true'
-                Notifier msg: Killed %c% out of %s%
-                Objective Name: Naked Mob Hunt
+                Objective Name: kill 3 mobs naked but only equiped with an axe made out of wood
+                Conditions: NONE
+                TargetConditions: ownsitemsimple{where=HAND;Material=wood_axe} && testfor{vc=(Inventory:[(Slot:100b)]);action=false} && testfor{vc=(Inventory:[(Slot:101b)]);action=false} && testfor{vc=(Inventory:[(Slot:102b)]);action=false} && testfor{vc=(Inventory:[(Slot:103b)]);action=false}
                 Internal Mobnames: ANY
+                Notifier enabled: 'true'
+                Notifier msg: You killed %c% out of %s% mobs while naked with an wooden axe!
   custom2:
     name: Kill 10 of these MythicMobs
     ask-message: Will you kill 10 of these MythicMobs for us?
@@ -128,7 +134,7 @@ can be identified as mythicmobs- and, or quest items. Syntax example:
         req1:
           name: MythicMobs Item Reward
           data:
-            Item: MMDIRT
+            MythicItem: MMDIRT
             Notify: 'true'
             RewardName: You received a MythicMobs item
             Amount: '1'
@@ -140,7 +146,7 @@ can be identified as mythicmobs- and, or quest items. Syntax example:
 
 The mythicitem reward uses the following data options and all attributes are required:
 
-+ **Item:** The internal mythicmobs itemname or droptable name. Can be an array like item1,item2,droptable1
++ **MythicItem:** The internal mythicmobs itemname or droptable name. Can be an array like item1,item2,droptable1
 + **Notifiy:** *true/false* If true the quester recieve a msg with a list of all items.
 + **RewardName:** Message displayed at reward.
 + **Amount:** Amount. In case of droptable how many times the droptable is parsed.
@@ -162,6 +168,7 @@ If the item was created by reward or requirement itself or by mythicmobsext's dr
 + **NameEnds:** String the items displayname ends with or *NONE*.
 + **MythicItem:** The internal name of the mythicmobs item.
 + **ItemMarker:** The name the item will be tagged with. Recommended is to just put in the internal mythicitem name.
++ **RemoveItem:** *true/false* Removes the required item from the players inventory.
 
 ```yaml
     requirements:
@@ -176,6 +183,7 @@ If the item was created by reward or requirement itself or by mythicmobsext's dr
             NameEnds: NONE
             MythicItem: MMDIRT
             ItemMarker: MMDIRT
+            RemoveItem: 'false'
       fail-requirement-message: Go and find the MMDIRT item!
 ```
 
@@ -194,9 +202,12 @@ If the item or items were created by reward, requirement or mythicmobsext's drop
 + **Material:** The items material name or ANY.
 + **NameEnds:** DisplayName of the item ends with this string or NONE.
 + **TimeLimit:** Unused
-+ **ItemMarker:** The nbt tag the item was marked with reward, require or with mythicmobsext's dropmythicitem mechanic. Usually its used to refer to the internal mythicmobs item name or NONE if no tag is used.
++ **MythicItem:** The internal mythicmobs item name. Stored in the items tag MythicMobsQuestItem, which is created by mme's dropmythicitem, reward and require.
++ **TargetConditions:** Targetcondition is always the player. Use && and || to build a boolean expression out of some conditions.
++ **Conditions:** Conditions the npc entity should have. Not sure how useful this is. Same as TargetConditions but compare the quester npc.
++ **RemoveItem** *(true/false)* Removes the delivered item from the players inventory/hand.
 
-This example use the ItemMarker to refer to a mythicmobsitem. There is no need to use material, lore or displayname.
+This example use the MythicItem to refer to a mythicmobsitem. There is no need to use material, lore or displayname.
 
 ```yaml
     stages:
@@ -214,7 +225,9 @@ This example use the ItemMarker to refer to a mythicmobsitem. There is no need t
                 Material: ANY
                 NameEnds: NONE
                 TimeLimit: '-1'
-                ItemMarker: MMDIRT
+                MythicItem: MMDIRT
+                TargetConditions: NONE
+                Conditions: NONE
           start-message: Bring the questitem MMDIRT to my friend bubu
           complete-message: Thank you for your help!
 ```
