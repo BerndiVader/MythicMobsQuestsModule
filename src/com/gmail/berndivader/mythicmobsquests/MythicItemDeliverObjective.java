@@ -66,8 +66,7 @@ Listener {
 	}
 	
 	@EventHandler
-	synchronized public void onNPCInteract(NPCRightClickEvent e) {
-		if (e.isCancelled()||e.getClicker().isConversing()) return;
+	public void onNPCInteract(NPCRightClickEvent e) {
 		final Player player=e.getClicker();
 		final Quester quester=quests.getQuester(player.getUniqueId());
 		for (Quest quest:quester.currentQuests.keySet()) {

@@ -37,7 +37,7 @@ public class MythicCondition {
         targets.add(this.trigger);
         HashSet<AbstractLocation>locations=new HashSet<AbstractLocation>();
         locations.add(this.trigger.getLocation());
-        this.data=new SkillMetadata(SkillTrigger.API,this.caster,this.trigger,this.caster.getLocation(),targets,locations,1);
+        this.data=new SkillMetadata(SkillTrigger.API,this.caster,this.trigger,this.caster.getLocation(),targets,null,1);
 		this.tConditionLines=new HashMap<>();
 		this.cConditionLines=new HashMap<>();
 		this.targetConditions=new HashMap<>();

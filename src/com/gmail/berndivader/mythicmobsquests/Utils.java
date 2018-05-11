@@ -55,8 +55,10 @@ public class Utils {
 			if (dt.hasConditions()) dt.conditions=new ArrayList<>();
 			for (int a=0;a<amount;a++) {
 				dt.parseTable(trigger);
-				player.giveExp(dt.getExp());
-				lm.put(str_exp,lm.containsKey(str_exp)?lm.get(str_exp)+dt.getExp():dt.getExp());
+				if (dt.getExp()>0) {
+					player.giveExp(dt.getExp());
+					lm.put(str_exp,lm.containsKey(str_exp)?lm.get(str_exp)+dt.getExp():dt.getExp());
+				}
 				if (dt.heroesexp>0&&CompatibilityManager.Heroes!=null) {
 					lm.put(str_hexp,lm.containsKey(str_hexp)?lm.get(str_hexp)+dt.getHeroesExp():dt.getHeroesExp());
 					CompatibilityManager.Heroes.giveHeroesExp(null,player,dt.heroesexp);

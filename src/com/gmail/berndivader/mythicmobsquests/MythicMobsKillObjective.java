@@ -115,7 +115,7 @@ Listener {
 										MythicMobsKillObjective.this.incrementObjective(p,MythicMobsKillObjective.this,1,q);
 									}
 								}
-							}.runTaskLater(MythicMobsKillObjective.quests,5);
+							}.runTaskLater(MythicMobsKillObjective.quests,1);
 						} else {
 							if (notifier) this.notifyQuester(qp, q, p, notifierMsg);
 							incrementObjective(p, this, 1, q);

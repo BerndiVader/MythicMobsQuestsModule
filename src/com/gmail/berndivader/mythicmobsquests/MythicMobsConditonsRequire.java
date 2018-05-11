@@ -19,7 +19,14 @@ CustomRequirement {
 
 	@Override
 	public boolean testRequirement(Player player, Map<String, Object> data) {
-		return true;
+		String[]arr1=data.get("Conditions").toString().split("\\{\\+\\+\\}");
+		MythicCondition mc=null;
+		boolean bl1=false;
+		for(int i1=0;i1<arr1.length;i1++) {
+			if ((mc=new MythicCondition(player,player,arr1[i1],null))!=null) {
+				if(!(bl1=mc.check())) break;
+			}
+		}
+		return bl1;
 	}
-
 }
