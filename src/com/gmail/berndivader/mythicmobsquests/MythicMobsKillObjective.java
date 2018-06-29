@@ -26,8 +26,18 @@ CustomObjective
 implements 
 Listener {
 
-	private static Quests quests = (Quests) Bukkit.getServer().getPluginManager().getPlugin("Quests");
-	private MobManager mobmanager = MythicMobs.inst().getMobManager();
+	private static Quests quests;
+	private static MobManager mobmanager;
+
+	static {
+		quests=(Quests)Bukkit.getServer().getPluginManager().getPlugin("Quests");
+		if(Bukkit.getServer().getPluginManager().isPluginEnabled("MythicMobs")) {
+			mobmanager=MythicMobs.inst().getMobManager();
+		} else {
+			Bukkit.getLogger().warning("MythicMobs not loaded!");
+			mobmanager=null;
+		}
+	}
 	
 	public MythicMobsKillObjective() {
 		setName("Kill MythicMobs Objective");
@@ -65,7 +75,15 @@ Listener {
 		int moblevel = 0;
 		final Player p = e.getEntity().getKiller();
 		final Entity bukkitEntity = e.getEntity();
-		final ActiveMob am=this.mobmanager.getMythicMobInstance(bukkitEntity);
+		if(mobmanager==null) {
+			try {
+				mobmanager=MythicMobs.inst().getMobManager();
+			} catch (Exception ex) {
+				Bukkit.getLogger().warning("MythicMobs not avaible.");
+				return;
+			}
+		}
+		final ActiveMob am=mobmanager.getMythicMobInstance(bukkitEntity);
 		if (am==null) return;
 		mobtype = am.getType().getInternalName();
 		moblevel = am.getLevel();
