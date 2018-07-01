@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,13 +11,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.mobs.ActiveMob;
-import io.lumine.xikage.mythicmobs.mobs.MobManager;
 import me.blackvein.quests.CustomObjective;
 import me.blackvein.quests.Quest;
 import me.blackvein.quests.Quester;
-import me.blackvein.quests.Quests;
 
 public class MythicMobsKillObjective 
 extends 
@@ -26,19 +22,6 @@ CustomObjective
 implements 
 Listener {
 
-	private static Quests quests;
-	private static MobManager mobmanager;
-
-	static {
-		quests=(Quests)Bukkit.getServer().getPluginManager().getPlugin("Quests");
-		if(Bukkit.getServer().getPluginManager().isPluginEnabled("MythicMobs")) {
-			mobmanager=MythicMobs.inst().getMobManager();
-		} else {
-			Bukkit.getLogger().warning("MythicMobs not loaded!");
-			mobmanager=null;
-		}
-	}
-	
 	public MythicMobsKillObjective() {
 		setName("Kill MythicMobs Objective");
 		setAuthor("BerndiVader");
@@ -70,26 +53,18 @@ Listener {
 	
 	@EventHandler
 	public void onMythicMobDeathEvent (EntityDeathEvent e) {
-		if (!(e.getEntity().getKiller() instanceof Player)) return;
+		if (!(e.getEntity().getKiller() instanceof Player)||!Utils.quests.isPresent()||!Utils.mobmanager.isPresent()) return;
 		String mobtype=null,f="";
 		int moblevel = 0;
 		final Player p = e.getEntity().getKiller();
 		final Entity bukkitEntity = e.getEntity();
-		if(mobmanager==null) {
-			try {
-				mobmanager=MythicMobs.inst().getMobManager();
-			} catch (Exception ex) {
-				Bukkit.getLogger().warning("MythicMobs not avaible.");
-				return;
-			}
-		}
-		final ActiveMob am=mobmanager.getMythicMobInstance(bukkitEntity);
+		final ActiveMob am=Utils.mobmanager.get().getMythicMobInstance(bukkitEntity);
 		if (am==null) return;
 		mobtype = am.getType().getInternalName();
 		moblevel = am.getLevel();
 		if (am.hasFaction()) f = am.getFaction();
 		if (mobtype == null || mobtype.isEmpty()) return;
-		final Quester qp = quests.getQuester(p.getUniqueId());
+		final Quester qp = Utils.quests.get().getQuester(p.getUniqueId());
 		if (qp.currentQuests.isEmpty()) return;
 		for (Quest q : qp.currentQuests.keySet()) {
 			Map<String, Object> m = getDatamap(p, this, q);
@@ -133,7 +108,7 @@ Listener {
 										MythicMobsKillObjective.this.incrementObjective(p,MythicMobsKillObjective.this,1,q);
 									}
 								}
-							}.runTaskLater(MythicMobsKillObjective.quests,1);
+							}.runTaskLater(Utils.quests.get(),1);
 						} else {
 							if (notifier) this.notifyQuester(qp, q, p, notifierMsg);
 							incrementObjective(p, this, 1, q);

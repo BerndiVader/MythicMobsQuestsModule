@@ -3,7 +3,6 @@ package com.gmail.berndivader.mythicmobsquests;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,14 +10,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import io.lumine.xikage.mythicmobs.MythicMobs;
-import io.lumine.xikage.mythicmobs.drops.DropManager;
 import io.lumine.xikage.mythicmobs.util.types.RangedDouble;
 import me.blackvein.quests.CustomObjective;
 import me.blackvein.quests.Quest;
 import me.blackvein.quests.Quester;
-import me.blackvein.quests.Quests;
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 
 public class MythicItemDeliverObjective 
@@ -27,15 +22,6 @@ CustomObjective
 implements
 Listener {
 
-	static Quests quests; 
-	static DropManager dropmanager;
-	static CitizensAPI citizens;
-	
-	static {
-		quests=(Quests)Bukkit.getPluginManager().getPlugin("Quests");
-		dropmanager=((MythicMobs)Bukkit.getPluginManager().getPlugin("MythicMobs")).getDropManager();
-	}
-	
 	public MythicItemDeliverObjective() {
 		setName("MythicItem NPC Deliver Objective");
 		setAuthor("BerndiVader, idea Wahrheit");
@@ -68,7 +54,8 @@ Listener {
 	@EventHandler
 	public void onNPCInteract(NPCRightClickEvent e) {
 		final Player player=e.getClicker();
-		final Quester quester=quests.getQuester(player.getUniqueId());
+		if(!Utils.quests.isPresent()) return;
+		final Quester quester=Utils.quests.get().getQuester(player.getUniqueId());
 		for (Quest quest:quester.currentQuests.keySet()) {
 			Map<String,Object>map=getDatamap(player,this,quest);
 			if (map==null) continue;
@@ -113,7 +100,7 @@ Listener {
 								quester.finishObjective(quest,"customObj",null,null,null,null,null,null,null,null,null,MythicItemDeliverObjective.this);
 							}
 						}
-					}.runTaskLater(MythicItemDeliverObjective.quests,1);
+					}.runTaskLater(Utils.quests.get(),1);
 				} else {
 					if (bl1) {
 						if (remove) Utils.removeItemstackAmount(holdItem,player,rd,fis,lit);

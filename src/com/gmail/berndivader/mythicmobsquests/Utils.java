@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -21,20 +23,53 @@ import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;
 import io.lumine.xikage.mythicmobs.compatibility.CompatibilityManager;
 import io.lumine.xikage.mythicmobs.drops.DropManager;
 import io.lumine.xikage.mythicmobs.drops.MythicDropTable;
+import io.lumine.xikage.mythicmobs.mobs.MobManager;
 import io.lumine.xikage.mythicmobs.util.types.RangedDouble;
+import me.blackvein.quests.Quests;
 
 public class Utils {
 	
-	static DropManager dropmanager;
+	public static Optional<DropManager> dropmanager;
+	public static Optional<MobManager> mobmanager;
+	public static Optional<Quests> quests;
 	static String str_questitem,str_money,str_exp,str_hexp,str_mexp;
 	
 	static {
-		dropmanager=MythicMobs.inst().getDropManager();
+		quests=Optional.ofNullable((Quests)Bukkit.getServer().getPluginManager().getPlugin("Quests"));
+		if(Bukkit.getServer().getPluginManager().isPluginEnabled("MythicMobs")) {
+			mobmanager=Optional.ofNullable(MythicMobs.inst().getMobManager());
+		} else {
+			Bukkit.getLogger().warning("Not able to get MythicMobs.");
+		}
 		str_questitem="MythicQuestItem";
 		str_money="Money: ";
 		str_exp="Exp: ";
 		str_hexp="Heroes Exp: ";
 		str_mexp="McMMO Exp: ";
+	}
+	
+	public static Optional<MobManager> getMobManager() {
+		if(mobmanager.isPresent()) return mobmanager;
+		if(Bukkit.getServer().getPluginManager().isPluginEnabled("MythicMobs")) {
+			Utils.mobmanager=Optional.ofNullable(MythicMobs.inst().getMobManager());
+		}
+		return mobmanager;
+	}
+	
+	public static Optional<DropManager> getDropManager() {
+		if(dropmanager.isPresent()) return dropmanager;
+		if(Bukkit.getServer().getPluginManager().isPluginEnabled("MythicMobs")) {
+			Utils.dropmanager=Optional.ofNullable(MythicMobs.inst().getDropManager());
+		}
+		return dropmanager;
+	}
+	
+	public static Optional<Quests> getQuests() {
+		if(quests.isPresent()) return quests;
+		if(Bukkit.getServer().getPluginManager().isPluginEnabled("Quests")) {
+			quests=Optional.ofNullable((Quests)Bukkit.getServer().getPluginManager().getPlugin("Quests"));
+		}
+		return quests;
 	}
 
 	public static boolean createAndDropItemStack(String[]arr1,String itemMarker,int amount,Player player,boolean notify,boolean stackable) {
@@ -51,7 +86,13 @@ public class Utils {
 			} else {
 				itemtype=arr1[i1];
 			}
-			MythicDropTable dt=dropmanager.getDropTable(itemtype).orElse(new MythicDropTable(Arrays.asList(itemtype),null,null,null,null));
+			MythicDropTable dt=null;
+			if(dropmanager.isPresent()) {
+				dt=dropmanager.get().getDropTable(itemtype).orElse(new MythicDropTable(Arrays.asList(itemtype),null,null,null,null));
+			} else {
+				Bukkit.getLogger().info("DropManager wasnt present.");
+				return false;
+			}
 			if (dt.hasConditions()) dt.conditions=new ArrayList<>();
 			for (int a=0;a<amount;a++) {
 				dt.parseTable(trigger);
