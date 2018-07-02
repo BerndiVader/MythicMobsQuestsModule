@@ -29,15 +29,16 @@ import me.blackvein.quests.Quests;
 
 public class Utils {
 	
-	public static Optional<DropManager> dropmanager;
-	public static Optional<MobManager> mobmanager;
-	public static Optional<Quests> quests;
+	public static Optional<DropManager>dropmanager=Optional.ofNullable(null);
+	public static Optional<MobManager>mobmanager=Optional.ofNullable(null);
+	public static Optional<Quests>quests=Optional.ofNullable(null);
 	static String str_questitem,str_money,str_exp,str_hexp,str_mexp;
 	
 	static {
 		quests=Optional.ofNullable((Quests)Bukkit.getServer().getPluginManager().getPlugin("Quests"));
 		if(Bukkit.getServer().getPluginManager().isPluginEnabled("MythicMobs")) {
 			mobmanager=Optional.ofNullable(MythicMobs.inst().getMobManager());
+			dropmanager=Optional.ofNullable(MythicMobs.inst().getDropManager());
 		} else {
 			Bukkit.getLogger().warning("Not able to get MythicMobs.");
 		}
@@ -87,6 +88,7 @@ public class Utils {
 				itemtype=arr1[i1];
 			}
 			MythicDropTable dt=null;
+			if(!dropmanager.isPresent()) getDropManager();
 			if(dropmanager.isPresent()) {
 				dt=dropmanager.get().getDropTable(itemtype).orElse(new MythicDropTable(Arrays.asList(itemtype),null,null,null,null));
 			} else {

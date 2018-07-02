@@ -12,6 +12,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import io.lumine.xikage.mythicmobs.mobs.ActiveMob;
+import io.lumine.xikage.mythicmobs.mobs.MobManager;
 import me.blackvein.quests.CustomObjective;
 import me.blackvein.quests.Quest;
 import me.blackvein.quests.Quester;
@@ -21,7 +22,7 @@ extends
 CustomObjective 
 implements 
 Listener {
-
+	
 	public MythicMobsKillObjective() {
 		setName("Kill MythicMobs Objective");
 		setAuthor("BerndiVader");
@@ -53,12 +54,14 @@ Listener {
 	
 	@EventHandler
 	public void onMythicMobDeathEvent (EntityDeathEvent e) {
-		if (!(e.getEntity().getKiller() instanceof Player)||!Utils.quests.isPresent()||!Utils.mobmanager.isPresent()) return;
+		if (!(e.getEntity().getKiller() instanceof Player)) return;
+		Optional<MobManager>mobmanager=Utils.getMobManager();
+		if (!mobmanager.isPresent()) return;
 		String mobtype=null,f="";
 		int moblevel = 0;
 		final Player p = e.getEntity().getKiller();
 		final Entity bukkitEntity = e.getEntity();
-		final ActiveMob am=Utils.mobmanager.get().getMythicMobInstance(bukkitEntity);
+		final ActiveMob am=mobmanager.get().getMythicMobInstance(bukkitEntity);
 		if (am==null) return;
 		mobtype = am.getType().getInternalName();
 		moblevel = am.getLevel();

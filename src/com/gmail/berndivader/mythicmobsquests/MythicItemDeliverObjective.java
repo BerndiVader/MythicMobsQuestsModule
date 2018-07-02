@@ -54,7 +54,6 @@ Listener {
 	@EventHandler
 	public void onNPCInteract(NPCRightClickEvent e) {
 		final Player player=e.getClicker();
-		if(!Utils.quests.isPresent()) return;
 		final Quester quester=Utils.quests.get().getQuester(player.getUniqueId());
 		for (Quest quest:quester.currentQuests.keySet()) {
 			Map<String,Object>map=getDatamap(player,this,quest);
