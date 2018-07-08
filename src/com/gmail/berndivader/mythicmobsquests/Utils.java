@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Bukkit;
@@ -15,11 +16,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import io.lumine.xikage.mythicmobs.MythicMobs;
+import io.lumine.xikage.mythicmobs.adapters.AbstractItemStack;
+import io.lumine.xikage.mythicmobs.adapters.AbstractPlayer;
 import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;
+import io.lumine.xikage.mythicmobs.drops.Drop;
 import io.lumine.xikage.mythicmobs.drops.DropManager;
 import io.lumine.xikage.mythicmobs.drops.DropMetadata;
 import io.lumine.xikage.mythicmobs.drops.DropTable;
+import io.lumine.xikage.mythicmobs.drops.IIntangibleDrop;
+import io.lumine.xikage.mythicmobs.drops.IItemDrop;
+import io.lumine.xikage.mythicmobs.drops.IMessagingDrop;
 import io.lumine.xikage.mythicmobs.drops.LootBag;
+import io.lumine.xikage.mythicmobs.drops.droppables.ExperienceDrop;
 import io.lumine.xikage.mythicmobs.mobs.GenericCaster;
 import io.lumine.xikage.mythicmobs.mobs.MobManager;
 import io.lumine.xikage.mythicmobs.util.types.RangedDouble;
@@ -72,8 +80,12 @@ public class Utils {
 	}
 
 	public static boolean createAndDropItemStack(String[]arr1,String itemMarker,int amount,Player player,boolean notify,boolean stackable) {
+		getDropManager();
+		if(!dropmanager.isPresent()) {
+			Bukkit.getLogger().info("DropManager wasnt present.");
+			return false;
+		}
 		boolean bl1=false;
-		HashMap<String,Integer>lm=new HashMap<>();
 		List<String>nm=new ArrayList<String>();
 		for(int i1=0;i1<arr1.length;i1++) {
 			String itemtype;
@@ -86,31 +98,49 @@ public class Utils {
 			}
 			nm.add(itemtype);
 			DropTable dt;
-			if(!dropmanager.isPresent()) getDropManager();
-			if(dropmanager.isPresent()) {
-				dt=new DropTable("QuestDrop","QuestDrop",nm);
-			} else {
-				Bukkit.getLogger().info("DropManager wasnt present.");
-				return false;
-			}
+			dt=new DropTable("QuestDrop","QuestDrop",nm);
 			for (int a=0;a<amount;a++) {
 				GenericCaster dropper=new GenericCaster(BukkitAdapter.adapt(player));
-		        LootBag lb=dt.generate(new DropMetadata(dropper,dropper.getEntity()));
-		        lb.drop(BukkitAdapter.adapt(player).getLocation());
+		        giveOrDrop(player,dt.generate(new DropMetadata(dropper,dropper.getEntity())),notify,itemMarker,stackable);
 			}
-			if (notify) {
-				String ll=ChatColor.DARK_GREEN+"";
-				Iterator<Map.Entry<String,Integer>>it=lm.entrySet().iterator();
-				while(it.hasNext()) {
-					Map.Entry<String,Integer>e=it.next();
-					ll+=e.getKey()+e.getValue()+" ";
-				}
-				player.sendMessage(ll);
-			}
+			nm.clear();
 		}
-		nm.clear();
 		return bl1;
 	}
+	
+    static void giveOrDrop(Player p,LootBag lootBag,boolean bl1,String itemMarker,boolean stackable) {
+    	AbstractPlayer player=BukkitAdapter.adapt(p);
+        HashMap<IMessagingDrop,Double>msgDrops=new HashMap<IMessagingDrop,Double>();
+        for (Drop type:lootBag.getDrops()) {
+            if (type instanceof IItemDrop) {
+            	ItemStack is=BukkitAdapter.adapt(((IItemDrop)type).getDrop(lootBag.getMetadata()));
+            	if (itemMarker!=null) NMSUtils.setMeta(is,str_questitem,itemMarker);
+				if (!stackable) {
+					UUID uuid=UUID.randomUUID();
+					String most=Long.toString(uuid.getMostSignificantBits()),least=Long.toString(uuid.getLeastSignificantBits());
+					NMSUtils.setMeta(is,"RandomMost",most);
+					NMSUtils.setMeta(is,"RandomLeast",least);
+				}
+				NMSUtils.setMeta(is,"MythicMobsItem","true");            	
+            	if (p.getInventory().firstEmpty()>-1) {
+                    p.getInventory().addItem(is.clone());
+            	} else {
+            		p.getLocation().getWorld().dropItem(p.getLocation(),is.clone());
+            	}
+            } else if (type instanceof ExperienceDrop) {
+                p.giveExp((int)type.getAmount());
+            } else if (type instanceof IIntangibleDrop) {
+                ((IIntangibleDrop)type).giveDrop(player,lootBag.getMetadata());
+            }
+            if (!(type instanceof IMessagingDrop)) continue;
+            msgDrops.merge((IMessagingDrop)type,type.getAmount(),(a,b)->a+b);
+        }
+        if (msgDrops.size()>0&&bl1) {
+            for (Map.Entry msg:msgDrops.entrySet()) {
+                player.sendMessage(((IMessagingDrop)msg.getKey()).getRewardMessage(lootBag.getMetadata(),(Double)msg.getValue()));
+            }
+        }
+    }
 	
 	public static int randomRangeInt(String range) {
 		ThreadLocalRandom r=ThreadLocalRandom.current();
