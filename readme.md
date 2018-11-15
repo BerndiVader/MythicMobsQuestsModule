@@ -4,6 +4,7 @@
 
 #### Changelog
 
+- 15.11.2018 Update: added Objective Name to Mythicitem deliver objective && counter for the objective name is now optional
 - 09.5.2018 Update: added remove item option to deliver and require. Changed ItemMarker to MythicItem in deliver.
 - 08.5.2018 Update: added Conditions & TargetConditions to the objectives.
 - 07.5.2018 Update: added mythicmobsitem requirement, deliver objective & improved reward.
