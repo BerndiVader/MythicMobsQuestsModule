@@ -133,7 +133,7 @@ public class Utils {
             msgDrops.merge((IMessagingDrop)type,type.getAmount(),(a,b)->a+b);
         }
         if (msgDrops.size()>0&&bl1) {
-            for (Map.Entry msg:msgDrops.entrySet()) {
+            for (Map.Entry<IMessagingDrop,Double>msg:msgDrops.entrySet()) {
                 player.sendMessage(((IMessagingDrop)msg.getKey()).getRewardMessage(lootBag.getMetadata(),(Double)msg.getValue()));
             }
         }

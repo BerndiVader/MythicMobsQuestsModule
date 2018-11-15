@@ -28,10 +28,10 @@ Listener {
 		setAuthor("BerndiVader");
 		addData("Objective Name");
 		addDescription("Objective Name", "Name your objective");
-		this.addData("Conditions");
-		this.addDescription("Conditions","Enter a mythicmobs conditions for npc");
-		this.addData("TargetConditions");
-		this.addDescription("TargetConditions","Enter a mythicmobs conditions for player");
+		addData("Conditions");
+		addDescription("Conditions","Enter a mythicmobs conditions for npc");
+		addData("TargetConditions");
+		addDescription("TargetConditions","Enter a mythicmobs conditions for player");
 		addData("Internal Mobnames");
 		addDescription("Internal Mobnames", "List of MythicMobs Types to use. Split with <,> or use ANY for any MythicMobs mobs.");
 		addData("Mob Level");
@@ -45,7 +45,7 @@ Listener {
 		setEnableCount(true);
 		setShowCount(true);
 		setCountPrompt("How many MythicMobs to kill");
-		setDisplay("%Objective Name%, Counter: %count%");
+		setDisplay("%Objective Name%");
 	}
 
 	public int getCounter() {

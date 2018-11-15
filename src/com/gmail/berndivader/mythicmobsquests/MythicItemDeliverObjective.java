@@ -26,7 +26,8 @@ Listener {
 		setName("MythicItem NPC Deliver Objective");
 		setAuthor("BerndiVader, idea Wahrheit");
 		setEnableCount(false);
-		this.setDisplay(" ");
+		this.addData("Objective Name");
+		this.addDescription("Objective Name","What's displayed for the player");
 		this.addData("NPC IDs");
 		this.addDescription("NPC IDs","NPC ID or ID list like 1,2,3,4");
 		this.addData("Conditions");
@@ -47,8 +48,7 @@ Listener {
 		this.addDescription("HoldItem","Player need to hold the item (true/false)");
 		this.addData("RemoveItem");
 		this.addDescription("RemoveItem","Remove the delivered item from the players inventory (true/false)");
-		this.addData("TimeLimit");
-		this.addDescription("TimeLimit","Limited time in seconds or -1 for unlimit");
+		setDisplay("%Objective Name%");
 	}
 	
 	@EventHandler
