@@ -20,34 +20,36 @@ public class MythicItemDeliverObjective
 extends
 CustomObjective 
 implements
-Listener {
+Listener,
+IDataMap 
+{
 
 	public MythicItemDeliverObjective() {
 		setName("MythicItem NPC Deliver Objective");
 		setAuthor("BerndiVader, idea Wahrheit");
 		setEnableCount(false);
-		this.addData("Objective Name");
-		this.addDescription("Objective Name","What's displayed for the player");
-		this.addData("NPC IDs");
-		this.addDescription("NPC IDs","NPC ID or ID list like 1,2,3,4");
-		this.addData("Conditions");
-		this.addDescription("Conditions","Enter a mythicmobs conditions for npc");
-		this.addData("TargetConditions");
-		this.addDescription("TargetConditions","Enter a mythicmobs conditions for player");
-		this.addData("Material");
-		this.addDescription("Material","Item material type or ANY");
-		this.addData("MythicItem");
-		this.addDescription("MythicItem","MythicMobs internal item name");
-		this.addData("NameEnds");
-		this.addDescription("NameEnds","Item name ends with or NONE");
-		this.addData("Lore");
-		this.addDescription("Lore","Lore contains that string or NONE");
-		this.addData("Amount");
-		this.addDescription("Amount","The required size of the stack. Like 10to64");
-		this.addData("HoldItem");
-		this.addDescription("HoldItem","Player need to hold the item (true/false)");
-		this.addData("RemoveItem");
-		this.addDescription("RemoveItem","Remove the delivered item from the players inventory (true/false)");
+		this.addDataAndDefault("Objective Name",new String());
+		this.addDescription("Objective Name","What's displayed for the player (Optional)");
+		this.addDataAndDefault("NPC IDs","-1");
+		this.addDescription("NPC IDs","NPC ID or ID list like 1,2,3,4 (Optional)");
+		this.addDataAndDefault("Conditions","NONE");
+		this.addDescription("Conditions","Enter a mythicmobs conditions for npc (Optional)");
+		this.addDataAndDefault("TargetConditions","NONE");
+		this.addDescription("TargetConditions","Enter a mythicmobs conditions for player (Optional)");
+		this.addDataAndDefault("Material","ANY");
+		this.addDescription("Material","Item material type (Optional)");
+		this.addDataAndDefault("MythicItem","NONE");
+		this.addDescription("MythicItem","MythicMobs internal item name (Optional)");
+		this.addDataAndDefault("NameEnds","NONE");
+		this.addDescription("NameEnds","Item name ends with (Optional)");
+		this.addDataAndDefault("Lore","NONE");
+		this.addDescription("Lore","Lore contains that string (Optional)");
+		this.addDataAndDefault("Amount",">0");
+		this.addDescription("Amount","The required size of the stack. Like 10to64 (Optional)");
+		this.addDataAndDefault("HoldItem",false);
+		this.addDescription("HoldItem","Player need to hold the item true/false(default)");
+		this.addDataAndDefault("RemoveItem",false);
+		this.addDescription("RemoveItem","Remove the delivered item from the players inventory true/false(default)");
 		setDisplay("%Objective Name%");
 	}
 	
@@ -76,7 +78,7 @@ Listener {
 				ListIterator<ItemStack>lit=player.getInventory().iterator();
 				ItemStack is=null;
 				if (holdItem) {
-					is=player.getInventory().getItemInMainHand().clone();
+					is=player.getInventory().getItemInMainHand();
 					bl1=Utils.chk(materials,itemMarker,nameEnds,lore,rd,is);
 				} else {
 					while(lit.hasNext()) {
@@ -93,9 +95,7 @@ Listener {
 						public void run() {
 							boolean bl1=bb;
 							if (bl1&=mc.check()) {
-								if (remove) {
-									if (remove) Utils.removeItemstackAmount(holdItem,player,rd,fis,lit);
-								}
+								if(remove) Utils.removeItemstackAmount(holdItem,player,rd,fis,lit);
 								quester.finishObjective(quest,"customObj",null,null,null,null,null,null,null,null,null,MythicItemDeliverObjective.this);
 							}
 						}
@@ -116,6 +116,11 @@ Listener {
 			if(arr1[i1].equals(Integer.toString(id))) return id;
 		}
 		return -1;
+	}
+
+	@Override
+	public void addDataAndDefault(String key, Object value) {
+		datamap.put(key,value);
 	}
 	
 }

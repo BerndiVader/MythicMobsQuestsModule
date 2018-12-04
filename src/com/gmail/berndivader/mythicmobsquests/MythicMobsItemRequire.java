@@ -13,27 +13,31 @@ import me.blackvein.quests.CustomRequirement;
 
 public class MythicMobsItemRequire 
 extends
-CustomRequirement {
+CustomRequirement
+implements
+IDataMap
+{
 	
 	public MythicMobsItemRequire() {
+		
 		this.setName("MythicMobs Item Require");
 		this.setAuthor("BerndiVader, idea Wahrheit");
-		this.addData("MythicItem");
-		this.addDescription("MythicItem","Internal MythicItem name");
-		this.addData("Material");
-		this.addDescription("Material","Item material type or ANY");
-		this.addData("NameEnds");
-		this.addDescription("NameEnds","Item name ends with or NONE");
-		this.addData("Lore");
-		this.addDescription("Lore","Lore contains that string or NONE");
-		this.addData("Amount");
-		this.addDescription("Amount","How many items. Can be ranged like 1to3");
-		this.addData("Supply");
-		this.addDescription("Supply","Supply player with missing item (true/false)");
-		this.addData("RemoveItem");
-		this.addDescription("RemoveItem","Remove the required item from the players inventory (true/false)");
-		this.addData("HoldItem");
-		this.addDescription("HoldItem","Player need to hold the item (true/false)");
+		this.addDataAndDefault("MythicItem","NONE");
+		this.addDescription("MythicItem","Internal MythicItem name (Optional)");
+		this.addDataAndDefault("Material","ANY");
+		this.addDescription("Material","Item material type (Optional)");
+		this.addDataAndDefault("NameEnds","NONE");
+		this.addDescription("NameEnds","Item name ends with (Optional)");
+		this.addDataAndDefault("Lore","NONE");
+		this.addDescription("Lore","Lore contains that string (Optional)");
+		this.addDataAndDefault("Amount",">0");
+		this.addDescription("Amount","How many items. Can be ranged like 1to3 (Default >0)");
+		this.addDataAndDefault("Supply",false);
+		this.addDescription("Supply","Supply player with missing item true/false(default)");
+		this.addDataAndDefault("RemoveItem",false);
+		this.addDescription("RemoveItem","Remove the required item from the players inventory true/false(default)");
+		this.addDataAndDefault("HoldItem",false);
+		this.addDescription("HoldItem","Player need to hold the item true/false(default)");
 	}
 
 	@Override
@@ -92,6 +96,11 @@ CustomRequirement {
 			bl1=Utils.createAndDropItemStack(new String[] {s3},s1,(int)rd.getMin(),player,false,true);
 		}
 		return bl1;
+	}
+
+	@Override
+	public void addDataAndDefault(String key, Object value) {
+		datamap.put(key, value);
 	}
 
 }

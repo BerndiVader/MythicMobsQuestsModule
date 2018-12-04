@@ -8,12 +8,15 @@ import me.blackvein.quests.CustomRequirement;
 
 public class MythicMobsConditonsRequire 
 extends
-CustomRequirement {
+CustomRequirement 
+implements
+IDataMap 
+{
 	
 	public MythicMobsConditonsRequire() {
 		this.setName("MythicMobs Conditions Require");
 		this.setAuthor("BerndiVader, idea Wahrheit");
-		this.addData("Conditions");
+		this.addDataAndDefault("Conditions",new String());
 		this.addDescription("Conditions","List of conditions to check");
 	}
 
@@ -28,5 +31,10 @@ CustomRequirement {
 			}
 		}
 		return bl1;
+	}
+
+	@Override
+	public void addDataAndDefault(String key, Object value) {
+		datamap.put(key,value);
 	}
 }

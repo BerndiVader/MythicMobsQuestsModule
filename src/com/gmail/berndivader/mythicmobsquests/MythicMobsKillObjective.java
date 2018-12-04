@@ -21,27 +21,29 @@ public class MythicMobsKillObjective
 extends 
 CustomObjective 
 implements 
-Listener {
+Listener,
+IDataMap
+{
 	
 	public MythicMobsKillObjective() {
 		setName("Kill MythicMobs Objective");
 		setAuthor("BerndiVader");
-		addData("Objective Name");
-		addDescription("Objective Name", "Name your objective");
-		addData("Conditions");
-		addDescription("Conditions","Enter a mythicmobs conditions for npc");
-		addData("TargetConditions");
-		addDescription("TargetConditions","Enter a mythicmobs conditions for player");
-		addData("Internal Mobnames");
-		addDescription("Internal Mobnames", "List of MythicMobs Types to use. Split with <,> or use ANY for any MythicMobs mobs.");
-		addData("Mob Level");
-		addDescription("Mob Level", "Level to match. 0 for every level, any singlevalue, or rangedvalue. Example: 2-5");
-		addData("Mob Faction");
-		addDescription("Mob Faction", "Faction of the mob to match. Split with <,> or use ANY for any mob faction");
-		addData("Notifier enabled");
-		addDescription("Notifier enabled", "true/false send counter msg in chat.");
-		addData("Notifier msg");
-		addDescription("Notifier msg", "Notifier message. %c% = placeholder for counter %s% placeholder for amount.");
+		addDataAndDefault("Objective Name",new String());
+		addDescription("Objective Name", "Name your objective (Optional)");
+		addDataAndDefault("Conditions","NONE");
+		addDescription("Conditions","Enter a mythicmobs conditions for npc (Optional)");
+		addDataAndDefault("TargetConditions","NONE");
+		addDescription("TargetConditions","Enter a mythicmobs conditions for player (Optional)");
+		addDataAndDefault("Internal Mobnames","ANY");
+		addDescription("Internal Mobnames", "List of MythicMobs Types to use. Split with <,> or use ANY for any MythicMobs mobs. (Optional)");
+		addDataAndDefault("Mob Level","0");
+		addDescription("Mob Level", "Level to match. 0 for every level, any singlevalue, or rangedvalue. Example: 2-5 (Optional)");
+		addDataAndDefault("Mob Faction","ANY");
+		addDescription("Mob Faction", "Faction of the mob to match. Split with <,> (Optional)");
+		addDataAndDefault("Notifier enabled",false);
+		addDescription("Notifier enabled", "true/false(default) send counter msg in chat.");
+		addDataAndDefault("Notifier msg",new String());
+		addDescription("Notifier msg", "Notifier message. %c% = placeholder for counter %s% placeholder for amount. (Optional)");
 		setEnableCount(true);
 		setShowCount(true);
 		setCountPrompt("How many MythicMobs to kill");
@@ -137,6 +139,11 @@ Listener {
         	msg = msg.replaceAll("\\%s\\%", Integer.toString(total));
         	p.sendMessage(msg);
         }
+	}
+
+	@Override
+	public void addDataAndDefault(String key, Object value) {
+		datamap.put(key, value);
 	}
 	
 }

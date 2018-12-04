@@ -35,11 +35,13 @@ public class Utils {
 	public static Optional<DropManager>dropmanager=Optional.ofNullable(null);
 	public static Optional<MobManager>mobmanager=Optional.ofNullable(null);
 	public static Optional<Quests>quests=Optional.ofNullable(null);
-	static String str_questitem,str_money,str_exp,str_hexp,str_mexp;
+	static String str_questitem,str_money,str_exp,str_hexp,str_mexp,str_mythicmobs,str_quests;
 	
 	static {
-		quests=Optional.ofNullable((Quests)Bukkit.getServer().getPluginManager().getPlugin("Quests"));
-		if(Bukkit.getServer().getPluginManager().isPluginEnabled("MythicMobs")) {
+		str_mythicmobs="MythicMobs";
+		str_quests="Quests";
+		quests=Optional.ofNullable((Quests)Bukkit.getServer().getPluginManager().getPlugin(str_quests));
+		if(Bukkit.getServer().getPluginManager().isPluginEnabled(str_mythicmobs)) {
 			mobmanager=Optional.ofNullable(MythicMobs.inst().getMobManager());
 			dropmanager=Optional.ofNullable(MythicMobs.inst().getDropManager());
 		} else {
@@ -54,7 +56,7 @@ public class Utils {
 	
 	public static Optional<MobManager> getMobManager() {
 		if(mobmanager.isPresent()) return mobmanager;
-		if(Bukkit.getServer().getPluginManager().isPluginEnabled("MythicMobs")) {
+		if(Bukkit.getServer().getPluginManager().isPluginEnabled(str_mythicmobs)) {
 			Utils.mobmanager=Optional.ofNullable(MythicMobs.inst().getMobManager());
 		}
 		return mobmanager;
@@ -62,7 +64,7 @@ public class Utils {
 	
 	public static Optional<DropManager> getDropManager() {
 		if(dropmanager.isPresent()) return dropmanager;
-		if(Bukkit.getServer().getPluginManager().isPluginEnabled("MythicMobs")) {
+		if(Bukkit.getServer().getPluginManager().isPluginEnabled(str_mythicmobs)) {
 			Utils.dropmanager=Optional.ofNullable(MythicMobs.inst().getDropManager());
 		}
 		return dropmanager;
@@ -70,8 +72,8 @@ public class Utils {
 	
 	public static Optional<Quests> getQuests() {
 		if(quests.isPresent()) return quests;
-		if(Bukkit.getServer().getPluginManager().isPluginEnabled("Quests")) {
-			quests=Optional.ofNullable((Quests)Bukkit.getServer().getPluginManager().getPlugin("Quests"));
+		if(Bukkit.getServer().getPluginManager().isPluginEnabled(str_quests)) {
+			quests=Optional.ofNullable((Quests)Bukkit.getServer().getPluginManager().getPlugin(str_quests));
 		}
 		return quests;
 	}
@@ -118,7 +120,6 @@ public class Utils {
 					NMSUtils.setMeta(is,"RandomMost",most);
 					NMSUtils.setMeta(is,"RandomLeast",least);
 				}
-				NMSUtils.setMeta(is,"MythicMobsItem","true");            	
             	if (p.getInventory().firstEmpty()>-1) {
                     p.getInventory().addItem(is.clone());
             	} else {

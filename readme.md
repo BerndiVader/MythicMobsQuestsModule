@@ -4,6 +4,7 @@
 
 #### Changelog
 
+- 04.12.2018 update: allows optional data entries.
 - 15.11.2018 Update: added Objective Name to Mythicitem deliver objective && counter for the objective name is now optional
 - 09.5.2018 Update: added remove item option to deliver and require. Changed ItemMarker to MythicItem in deliver.
 - 08.5.2018 Update: added Conditions & TargetConditions to the objectives.
@@ -50,13 +51,9 @@ quests:
             custom1:
               name: Kill MythicMobs Objective
               count: 3
-              data:
-                Mob Level: '0'
-                Mob Faction: ANY
+                data:
                 Objective Name: kill 3 mobs naked but only equiped with an axe made out of wood
-                Conditions: NONE
                 TargetConditions: ownsitemsimple{where=HAND;Material=wood_axe} && testfor{vc=(Inventory:[(Slot:100b)]);action=false} && testfor{vc=(Inventory:[(Slot:101b)]);action=false} && testfor{vc=(Inventory:[(Slot:102b)]);action=false} && testfor{vc=(Inventory:[(Slot:103b)]);action=false}
-                Internal Mobnames: ANY
                 Notifier enabled: 'true'
                 Notifier msg: You killed %c% out of %s% mobs while naked with an wooden axe!
   custom2:
@@ -71,17 +68,12 @@ quests:
               name: Kill MythicMobs Objective
               count: 10
               data:
-                Mob Level: '0'
-                Mob Faction: ANY
-                Internal Mobnames: ANY
                 Notifier enabled: 'true'
                 Notifier msg: Killed %c% out of %s%
                 Objective Name: Kill 10 of any MythicMob
 ```
 
 ##### Configuration Notes
-
-You **must** include **Mob Level, Internal Mobnames, and Objective Name,** or the module will not work. The other options can be omitted.
 
 If you want the player to see a notification message tracking their progress, set **Notifier enabled** to true and use **Notifier msg** to customize the message. You can use **%s%** and **%c%** as placeholder for whole amount and actual count.
 
@@ -116,9 +108,6 @@ Note that this is the **internal name** of the mob (used to initiate the YAML bl
               name: Kill MythicMobs Objective
               count: 10
               data:
-                Mob Level: '0'
-                Mob Faction: ANY
-                Internal Mobnames: ANY
                 Notifier enabled: 'true'
                 Notifier msg: Killed %c% out of %s%
                 Objective Name: Kill 10 of any MythicMob
