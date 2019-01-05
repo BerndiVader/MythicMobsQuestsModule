@@ -21,27 +21,29 @@ public class MythicMobsKillObjective
 extends 
 CustomObjective 
 implements 
-Listener {
+Listener,
+IDataMap
+{
 	
 	public MythicMobsKillObjective() {
 		setName("Kill MythicMobs Objective");
 		setAuthor("BerndiVader");
-		addData("Objective Name");
-		addDescription("Objective Name", "Name your objective");
-		addData("Conditions");
-		addDescription("Conditions","Enter a mythicmobs conditions for npc");
-		addData("TargetConditions");
-		addDescription("TargetConditions","Enter a mythicmobs conditions for player");
-		addData("Internal Mobnames");
-		addDescription("Internal Mobnames", "List of MythicMobs Types to use. Split with <,> or use ANY for any MythicMobs mobs.");
-		addData("Mob Level");
-		addDescription("Mob Level", "Level to match. 0 for every level, any singlevalue, or rangedvalue. Example: 2-5");
-		addData("Mob Faction");
-		addDescription("Mob Faction", "Faction of the mob to match. Split with <,> or use ANY for any mob faction");
-		addData("Notifier enabled");
-		addDescription("Notifier enabled", "true/false send counter msg in chat.");
-		addData("Notifier msg");
-		addDescription("Notifier msg", "Notifier message. %c% = placeholder for counter %s% placeholder for amount.");
+		addDataAndDefault("Objective Name",new String());
+		addDescription("Objective Name", "Name your objective (Optional)");
+		addDataAndDefault("Conditions","NONE");
+		addDescription("Conditions","Enter a mythicmobs conditions for npc (Optional)");
+		addDataAndDefault("TargetConditions","NONE");
+		addDescription("TargetConditions","Enter a mythicmobs conditions for player (Optional)");
+		addDataAndDefault("Internal Mobnames","ANY");
+		addDescription("Internal Mobnames", "List of MythicMobs Types to use. Split with <,> or use ANY for any MythicMobs mobs. (Optional)");
+		addDataAndDefault("Mob Level","0");
+		addDescription("Mob Level", "Level to match. 0 for every level, any singlevalue, or rangedvalue. Example: 2-5 (Optional)");
+		addDataAndDefault("Mob Faction","ANY");
+		addDescription("Mob Faction", "Faction of the mob to match. Split with <,> (Optional)");
+		addDataAndDefault("Notifier enabled",false);
+		addDescription("Notifier enabled", "true/false(default) send counter msg in chat.");
+		addDataAndDefault("Notifier msg",new String());
+		addDescription("Notifier msg", "Notifier message. %c% = placeholder for counter %s% placeholder for amount. (Optional)");
 		setEnableCount(true);
 		setShowCount(true);
 		setCountPrompt("How many MythicMobs to kill");
@@ -68,8 +70,8 @@ Listener {
 		if (am.hasFaction()) f = am.getFaction();
 		if (mobtype == null || mobtype.isEmpty()) return;
 		final Quester qp = Utils.quests.get().getQuester(p.getUniqueId());
-		if (qp.currentQuests.isEmpty()) return;
-		for (Quest q : qp.currentQuests.keySet()) {
+		if (qp.getCurrentQuests().isEmpty()) return;
+		for (Quest q : qp.getCurrentQuests().keySet()) {
 			Map<String, Object> m = getDatamap(p, this, q);
 			if (m == null) continue;
 			Optional<String>maybeKT=Optional.ofNullable((String)m.get("Internal Mobnames"));
@@ -124,19 +126,24 @@ Listener {
 	
 	private void notifyQuester(Quester qp, Quest q, Player p, String msg) {
         int index = -1;
-        for (int i = 0; i < qp.getCurrentStage(q).customObjectives.size(); i++) {
-            if (qp.getCurrentStage(q).customObjectives.get(i).getName().equals(this.getName())) {
+        for (int i = 0; i < qp.getCurrentStage(q).getCustomObjectives().size(); i++) {
+            if (qp.getCurrentStage(q).getCustomObjectives().get(i).getName().equals(this.getName())) {
                 index = i;
                 break;
             }
         }
         if (index>-1) {
-        	int total = qp.getCurrentStage(q).customObjectiveCounts.get(index);
+        	int total = qp.getCurrentStage(q).getCustomObjectiveCounts().get(index);
         	int count = 1+qp.getQuestData(q).customObjectiveCounts.get(this.getName());
         	msg = msg.replaceAll("\\%c\\%", Integer.toString(count));
         	msg = msg.replaceAll("\\%s\\%", Integer.toString(total));
         	p.sendMessage(msg);
         }
+	}
+
+	@Override
+	public void addDataAndDefault(String key, Object value) {
+		datamap.put(key, value);
 	}
 	
 }

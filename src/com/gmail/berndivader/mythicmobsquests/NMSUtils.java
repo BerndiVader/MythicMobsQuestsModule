@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 
 public class NMSUtils {
 	
-    protected static String vp="";
+    protected static String vp=new String();
 	
     protected static Class<?> class_CraftItemStack;
     protected static Class<?> class_NBTTagCompound;
@@ -91,7 +91,7 @@ public class NMSUtils {
     public static String getMeta(org.bukkit.inventory.ItemStack is,String s1) {
     	Object o1=getTag(getHandle(is));
     	if (o1==null||!class_NBTTagCompound.isInstance(o1)) return null;
-    	String s2="";
+    	String s2=new String();
     	try {
     		s2=(String)class_NBTTagCompound_getStringMethod.invoke(o1,s1);
     	} catch (Throwable ex) {
