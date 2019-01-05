@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 
 public class NMSUtils {
 	
-    protected static String vp="";
+    protected static String vp=new String();
 	
     protected static Class<?> class_CraftItemStack;
     protected static Class<?> class_NBTTagCompound;

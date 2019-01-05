@@ -57,7 +57,7 @@ IDataMap
 	public void onNPCInteract(NPCRightClickEvent e) {
 		final Player player=e.getClicker();
 		final Quester quester=Utils.quests.get().getQuester(player.getUniqueId());
-		for (Quest quest:quester.currentQuests.keySet()) {
+		for (Quest quest:quester.getCurrentQuests().keySet()) {
 			Map<String,Object>map=getDatamap(player,this,quest);
 			if (map==null) continue;
 			if (npcID(map,e.getNPC().getId())>-1) {

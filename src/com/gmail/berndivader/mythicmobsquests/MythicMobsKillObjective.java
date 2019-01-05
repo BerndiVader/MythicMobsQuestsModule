@@ -70,8 +70,8 @@ IDataMap
 		if (am.hasFaction()) f = am.getFaction();
 		if (mobtype == null || mobtype.isEmpty()) return;
 		final Quester qp = Utils.quests.get().getQuester(p.getUniqueId());
-		if (qp.currentQuests.isEmpty()) return;
-		for (Quest q : qp.currentQuests.keySet()) {
+		if (qp.getCurrentQuests().isEmpty()) return;
+		for (Quest q : qp.getCurrentQuests().keySet()) {
 			Map<String, Object> m = getDatamap(p, this, q);
 			if (m == null) continue;
 			Optional<String>maybeKT=Optional.ofNullable((String)m.get("Internal Mobnames"));
@@ -126,14 +126,14 @@ IDataMap
 	
 	private void notifyQuester(Quester qp, Quest q, Player p, String msg) {
         int index = -1;
-        for (int i = 0; i < qp.getCurrentStage(q).customObjectives.size(); i++) {
-            if (qp.getCurrentStage(q).customObjectives.get(i).getName().equals(this.getName())) {
+        for (int i = 0; i < qp.getCurrentStage(q).getCustomObjectives().size(); i++) {
+            if (qp.getCurrentStage(q).getCustomObjectives().get(i).getName().equals(this.getName())) {
                 index = i;
                 break;
             }
         }
         if (index>-1) {
-        	int total = qp.getCurrentStage(q).customObjectiveCounts.get(index);
+        	int total = qp.getCurrentStage(q).getCustomObjectiveCounts().get(index);
         	int count = 1+qp.getQuestData(q).customObjectiveCounts.get(this.getName());
         	msg = msg.replaceAll("\\%c\\%", Integer.toString(count));
         	msg = msg.replaceAll("\\%s\\%", Integer.toString(total));
