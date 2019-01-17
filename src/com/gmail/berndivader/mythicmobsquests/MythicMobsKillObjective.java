@@ -143,7 +143,7 @@ IDataMap
 
 	@Override
 	public void addDataAndDefault(String key, Object value) {
-		datamap.put(key, value);
+		this.getData().put(key, value);
 	}
 	
 }
