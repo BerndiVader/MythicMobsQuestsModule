@@ -1,5 +1,6 @@
 package com.gmail.berndivader.mythicmobsquests;
 
+import java.util.AbstractMap;
 import java.util.ListIterator;
 import java.util.Map;
 
@@ -9,6 +10,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import com.avaje.ebeaninternal.server.type.SimpleAesEncryptor;
 
 import io.lumine.xikage.mythicmobs.util.types.RangedDouble;
 import me.blackvein.quests.CustomObjective;
@@ -120,7 +123,7 @@ IDataMap
 
 	@Override
 	public void addDataAndDefault(String key, Object value) {
-		this.getData().put(key,value);
+		this.getData().add(new AbstractMap.SimpleEntry<>(key,value));
 	}
 	
 }

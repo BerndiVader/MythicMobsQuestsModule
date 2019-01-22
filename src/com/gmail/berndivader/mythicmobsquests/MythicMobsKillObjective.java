@@ -1,5 +1,6 @@
 package com.gmail.berndivader.mythicmobsquests;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -143,7 +144,7 @@ IDataMap
 
 	@Override
 	public void addDataAndDefault(String key, Object value) {
-		this.getData().put(key, value);
+		this.getData().add(new AbstractMap.SimpleEntry<>(key,value));
 	}
 	
 }
