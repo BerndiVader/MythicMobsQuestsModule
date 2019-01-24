@@ -20,36 +20,24 @@ public class MythicItemDeliverObjective
 extends
 CustomObjective 
 implements
-Listener,
-IDataMap 
+Listener
 {
 
 	public MythicItemDeliverObjective() {
 		setName("MythicItem NPC Deliver Objective");
 		setAuthor("BerndiVader, idea Wahrheit");
-		setEnableCount(false);
-		this.addDataAndDefault("Objective Name",new String());
-		this.addDescription("Objective Name","What's displayed for the player (Optional)");
-		this.addDataAndDefault("NPC IDs","-1");
-		this.addDescription("NPC IDs","NPC ID or ID list like 1,2,3,4 (Optional)");
-		this.addDataAndDefault("Conditions","NONE");
-		this.addDescription("Conditions","Enter a mythicmobs conditions for npc (Optional)");
-		this.addDataAndDefault("TargetConditions","NONE");
-		this.addDescription("TargetConditions","Enter a mythicmobs conditions for player (Optional)");
-		this.addDataAndDefault("Material","ANY");
-		this.addDescription("Material","Item material type (Optional)");
-		this.addDataAndDefault("MythicItem","NONE");
-		this.addDescription("MythicItem","MythicMobs internal item name (Optional)");
-		this.addDataAndDefault("NameEnds","NONE");
-		this.addDescription("NameEnds","Item name ends with (Optional)");
-		this.addDataAndDefault("Lore","NONE");
-		this.addDescription("Lore","Lore contains that string (Optional)");
-		this.addDataAndDefault("Amount",">0");
-		this.addDescription("Amount","The required size of the stack. Like 10to64 (Optional)");
-		this.addDataAndDefault("HoldItem",false);
-		this.addDescription("HoldItem","Player need to hold the item true/false(default)");
-		this.addDataAndDefault("RemoveItem",false);
-		this.addDescription("RemoveItem","Remove the delivered item from the players inventory true/false(default)");
+		setShowCount(false);
+		addStringPrompt("Objective Name","What's displayed for the player (Optional)",new String());
+		addStringPrompt("NPC IDs","NPC ID or ID list like 1,2,3,4 (Optional)","-1");
+		addStringPrompt("Conditions","Enter a mythicmobs conditions for npc (Optional)","NONE");
+		addStringPrompt("TargetConditions","Enter a mythicmobs conditions for player (Optional)","NONE");
+		addStringPrompt("Material","Item material type (Optional)","ANY");
+		addStringPrompt("MythicItem","MythicMobs internal item name (Optional)","NONE");
+		addStringPrompt("NameEnds","Item name ends with (Optional)","NONE");
+		addStringPrompt("Lore","Lore contains that string (Optional)","NONE");
+		addStringPrompt("Amount","The required size of the stack. Like 10to64 (Optional)",">0");
+		addStringPrompt("HoldItem","Player need to hold the item true/false(default)",false);
+		addStringPrompt("RemoveItem","Remove the delivered item from the players inventory true/false(default)",false);
 		setDisplay("%Objective Name%");
 	}
 	
@@ -58,7 +46,7 @@ IDataMap
 		final Player player=e.getClicker();
 		final Quester quester=Utils.quests.get().getQuester(player.getUniqueId());
 		for (Quest quest:quester.getCurrentQuests().keySet()) {
-			Map<String,Object>map=getDatamap(player,this,quest);
+			Map<String,Object>map=getDataForPlayer(player,this,quest);
 			if (map==null) continue;
 			if (npcID(map,e.getNPC().getId())>-1) {
 				String[]materials=map.getOrDefault("Material","ANY").toString().toUpperCase().split(",");
@@ -117,10 +105,4 @@ IDataMap
 		}
 		return -1;
 	}
-
-	@Override
-	public void addDataAndDefault(String key, Object value) {
-		datamap.put(key,value);
-	}
-	
 }

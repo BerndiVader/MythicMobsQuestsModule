@@ -9,9 +9,7 @@ import me.blackvein.quests.CustomReward;
 
 public class MythicMobsItemReward 
 extends
-CustomReward 
-implements
-IDataMap
+CustomReward
 {
 	
 	public MythicMobsItemReward() {
@@ -19,18 +17,12 @@ IDataMap
 		this.setName("MythicMobs Item Reward");
 		this.setAuthor("BerndiVader");
 		this.setRewardName("MythicMobs Item Reward");
-		this.addDataAndDefault("RewardName","NONE");
-		this.addDescription("RewardName","Reward message send to quester on reward (Optional)");
-		this.addDataAndDefault("MythicItem",new String());
-		this.addDescription("MythicItem","Enter the item or droptable name or an array splited with ',' (Optional)");
-		this.addDataAndDefault("Amount","1");
-		this.addDescription("Amount","How many items. Can be ranged like 1to3 (Default 1)");
-		this.addDataAndDefault("ItemMarker","NONE");
-		this.addDescription("ItemMarker","Mark the item as a MythicMobs Quests item (Optional)");
-		this.addDataAndDefault("Stackable",false);
-		this.addDescription("Stackable","true/false(default)");
-		this.addDataAndDefault("Notify",false);
-		this.addDescription("Notify","Announce recieved items true/false(default)");
+		this.addStringPrompt("RewardName","Reward message send to quester on reward (Optional)","NONE");
+		this.addStringPrompt("MythicItem","Enter the item or droptable name or an array splited with ',' (Optional)",new String());
+		this.addStringPrompt("Amount","How many items. Can be ranged like 1to3 (Default 1)","1");
+		this.addStringPrompt("ItemMarker","Mark the item as a MythicMobs Quests item (Optional)","NONE");
+		this.addStringPrompt("Stackable","true/false(default)",false);
+		this.addStringPrompt("Notify","Announce recieved items true/false(default)",false);
 	}
 
 	@Override
@@ -49,10 +41,4 @@ IDataMap
 			ex.printStackTrace();
 		}
 	}
-
-	@Override
-	public void addDataAndDefault(String key, Object value) {
-		datamap.put(key, value);
-	}
-
 }
