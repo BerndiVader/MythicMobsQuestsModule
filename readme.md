@@ -4,6 +4,7 @@
 
 #### Changelog
 
+- 01.23.2019 update: update to Quests 3.6.0
 - 04.12.2018 update: allows optional data entries.
 - 15.11.2018 Update: added Objective Name to Mythicitem deliver objective && counter for the objective name is now optional
 - 09.5.2018 Update: added remove item option to deliver and require. Changed ItemMarker to MythicItem in deliver.
