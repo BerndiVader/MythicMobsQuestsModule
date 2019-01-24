@@ -9,16 +9,12 @@ import me.blackvein.quests.CustomRequirement;
 public class MythicMobsConditonsRequire 
 extends
 CustomRequirement 
-implements
-IDataMap 
 {
 	
 	public MythicMobsConditonsRequire() {
 		this.setName("MythicMobs Conditions Require");
 		this.setAuthor("BerndiVader, idea Wahrheit");
-		this.addDataAndDefault("Conditions",new String());
-		this.addDescription("Conditions","List of conditions to check");
-	}
+		this.addStringPrompt("Conditions","List of conditions to check",new String());	}
 
 	@Override
 	public boolean testRequirement(Player player, Map<String, Object> data) {
@@ -33,8 +29,4 @@ IDataMap
 		return bl1;
 	}
 
-	@Override
-	public void addDataAndDefault(String key, Object value) {
-		this.getData().put(key,value);
-	}
 }

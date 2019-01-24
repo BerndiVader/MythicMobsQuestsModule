@@ -14,30 +14,20 @@ import me.blackvein.quests.CustomRequirement;
 public class MythicMobsItemRequire 
 extends
 CustomRequirement
-implements
-IDataMap
 {
 	
 	public MythicMobsItemRequire() {
 		
 		this.setName("MythicMobs Item Require");
 		this.setAuthor("BerndiVader, idea Wahrheit");
-		this.addDataAndDefault("MythicItem","NONE");
-		this.addDescription("MythicItem","Internal MythicItem name (Optional)");
-		this.addDataAndDefault("Material","ANY");
-		this.addDescription("Material","Item material type (Optional)");
-		this.addDataAndDefault("NameEnds","NONE");
-		this.addDescription("NameEnds","Item name ends with (Optional)");
-		this.addDataAndDefault("Lore","NONE");
-		this.addDescription("Lore","Lore contains that string (Optional)");
-		this.addDataAndDefault("Amount",">0");
-		this.addDescription("Amount","How many items. Can be ranged like 1to3 (Default >0)");
-		this.addDataAndDefault("Supply",false);
-		this.addDescription("Supply","Supply player with missing item true/false(default)");
-		this.addDataAndDefault("RemoveItem",false);
-		this.addDescription("RemoveItem","Remove the required item from the players inventory true/false(default)");
-		this.addDataAndDefault("HoldItem",false);
-		this.addDescription("HoldItem","Player need to hold the item true/false(default)");
+		addStringPrompt("MythicItem","Internal MythicItem name (Optional)","NONE");
+		addStringPrompt("Material","Item material type (Optional)","ANY");
+		addStringPrompt("NameEnds","Item name ends with (Optional)","NONE");
+		addStringPrompt("Lore","Lore contains that string (Optional)","NONE");
+		addStringPrompt("Amount","How many items. Can be ranged like 1to3 (Default >0)",">0");
+		addStringPrompt("Supply","Supply player with missing item true/false(default)",false);
+		addStringPrompt("RemoveItem","Remove the required item from the players inventory true/false(default)",false);
+		addStringPrompt("HoldItem","Player need to hold the item true/false(default)",false);
 	}
 
 	@Override
@@ -97,10 +87,4 @@ IDataMap
 		}
 		return bl1;
 	}
-
-	@Override
-	public void addDataAndDefault(String key, Object value) {
-		this.getData().put(key, value);
-	}
-
 }
