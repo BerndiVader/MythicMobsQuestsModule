@@ -14,8 +14,10 @@ CustomRequirement
 	public MythicMobsConditonsRequire() {
 		this.setName("MythicMobs Conditions Require");
 		this.setAuthor("BerndiVader, idea Wahrheit");
-		this.addStringPrompt("Conditions","List of conditions to check",new String());
-	}
+
+		this.addStringPrompt("Conditions","List of conditions to check",new String());	
+  }
+
 
 	@Override
 	public boolean testRequirement(Player player, Map<String, Object> data) {

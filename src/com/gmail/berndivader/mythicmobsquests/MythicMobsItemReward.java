@@ -9,7 +9,7 @@ import me.blackvein.quests.CustomReward;
 
 public class MythicMobsItemReward 
 extends
-CustomReward
+CustomReward 
 {
 	
 	public MythicMobsItemReward() {

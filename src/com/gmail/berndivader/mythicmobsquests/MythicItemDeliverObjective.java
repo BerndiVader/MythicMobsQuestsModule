@@ -20,7 +20,7 @@ public class MythicItemDeliverObjective
 extends
 CustomObjective 
 implements
-Listener
+Listener 
 {
 
 	public MythicItemDeliverObjective() {
