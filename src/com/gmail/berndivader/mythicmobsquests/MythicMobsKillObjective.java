@@ -64,11 +64,11 @@ Listener
 		for (Quest q : qp.getCurrentQuests().keySet()) {
 			Map<String, Object> m = getDataForPlayer(p, this, q);
 			if (m == null) continue;
-			Optional<String>maybeKT=Optional.ofNullable((String)m.get("Internal Mobnames"));
-			Optional<String>maybePARSE=Optional.ofNullable((String)m.get("Mob Level"));
-			Optional<String>maybeFaction=Optional.ofNullable((String)m.get("Mob Faction"));
-			Optional<String>maybeNotifier=Optional.ofNullable((String)m.get("Notifier enabled"));
-			Optional<String>maybeNotifierMsg=Optional.ofNullable((String)m.get("Notifier msg"));
+			Optional<String>maybeKT=Optional.ofNullable(m.get("Internal Mobnames").toString());
+			Optional<String>maybePARSE=Optional.ofNullable(m.get("Mob Level").toString());
+			Optional<String>maybeFaction=Optional.ofNullable(m.get("Mob Faction").toString());
+			Optional<String>maybeNotifier=Optional.ofNullable(m.get("Notifier enabled").toString());
+			Optional<String>maybeNotifierMsg=Optional.ofNullable(m.get("Notifier msg").toString());
 			String[]kt=maybeKT.orElse("ANY").split(",");
 			String[]parseLvl=maybePARSE.orElse("0").split("-");
 			String[]faction=maybeFaction.orElse("ANY").split(",");

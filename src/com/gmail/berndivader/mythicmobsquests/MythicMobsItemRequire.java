@@ -43,7 +43,7 @@ CustomRequirement
 		if (s2.toUpperCase().equals("NONE")) s2=null;
 		if (s3.toUpperCase().equals("NONE")) s3=null;
 		if (s4.toUpperCase().equals("NONE")) s4=null;
-		RangedDouble rd=new RangedDouble((String)data.get("Amount"));
+		RangedDouble rd=new RangedDouble(data.get("Amount").toString());
 		String str2=data.get("Material").toString().toUpperCase();
 		if (!str2.equals("ANY")) {
 			try {

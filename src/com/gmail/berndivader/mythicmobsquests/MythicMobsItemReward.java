@@ -29,12 +29,12 @@ CustomReward
 	public void giveReward(Player player, Map<String, Object> data) {
 		try {
 			String[]arr1=data.get("MythicItem").toString().split(",");
-			String s2=(String)data.getOrDefault("Amount","1");
-			String s1=(String)data.getOrDefault("ItemMarker","NONE");
-			String s3=(String)data.getOrDefault("RewardName",null);
+			String s2=data.getOrDefault("Amount","1").toString();
+			String s1=data.getOrDefault("ItemMarker","NONE").toString();
+			String s3=data.getOrDefault("RewardName",null).toString();
 			if (s1.equals("NONE")) s1=null;
-			boolean notify=Boolean.parseBoolean((String)data.getOrDefault("Notify","TRUE"));
-			boolean stackable=Boolean.parseBoolean((String)data.getOrDefault("Stackable","TRUE"));
+			boolean notify=Boolean.parseBoolean(data.getOrDefault("Notify","TRUE").toString());
+			boolean stackable=Boolean.parseBoolean(data.getOrDefault("Stackable","TRUE").toString());
 			if(s3!=null) player.sendMessage(ChatColor.GOLD+s3);
 			Utils.createAndDropItemStack(arr1,s1,Utils.randomRangeInt(s2),player,notify,stackable);
 		} catch (Exception ex) {
