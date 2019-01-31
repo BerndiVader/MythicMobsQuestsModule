@@ -1,6 +1,8 @@
-# Quest Addon for MythicMobs 4.0.1 or any higher version and Spigot 1.8.8 - 1.12
+# Quest Addon for MythicMobs 4.0.1 or any higher version and Spigot 1.8.8 - 1.13.2
 
-#### if you use Quests version below 3.2.7 use the *MythicMobsQuests285.jar* module!
+# [DOWNLOAD](http://mc.hackerzlair.org:8080/job/MythicMobsQuests/) [![Build Status](http://mc.hackerzlair.org:8080/job/MythicMobsQuests/badge/icon)] <br>
+
+# [FOR QUESTS 3.2.7 AND BELOW] (https://github.com/BerndiVader/MythicMobsQuestsModule/releases/tag/285)
 
 #### Changelog
 
