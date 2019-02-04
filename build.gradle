@@ -1,0 +1,41 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+task processbuildnumber {
+	Properties p1=new Properties()
+	def d1=project.projectDir
+	def d2="${d1}/gradle.properties"
+	File pf1=new File(d2)
+	p1.load(pf1.newDataInputStream())
+	Integer i1=(((p1.getProperty('artbuild')) as BigDecimal) + 1 )
+	p1.setProperty('artbuild', i1.toString())
+	p1.store(pf1.newWriter(), null)
+	p1.load(pf1.newDataInputStream())
+	version = artver
+	group = "com.gmail.berndivader"
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven {
+        url "http://mc.hackerzlair.org:8888/repository/public"
+    }    
+}
+
+dependencies {
+    compileOnly "org.spigotmc:spigot:1.13.2"
+    compileOnly "io.lumine.xikage:mythicmobs:4.5.1"
+    compileOnly "me.blackvein:quests:3.6.2"
+    compileOnly "net.citizensnpcs:citizens:2.0.24-b1612"
+}
+
+task createPom  {
+    pom {
+        project {
+            groupId "com.gmail.berndivader"
+            artifactId project.name
+            version project.version
+        }
+    }.writeTo("./build/libs/"+project.name+"-"+project.version+".xml")
+}
