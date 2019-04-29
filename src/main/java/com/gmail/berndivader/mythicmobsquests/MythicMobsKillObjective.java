@@ -64,22 +64,17 @@ Listener
 		for (Quest q : qp.getCurrentQuests().keySet()) {
 			Map<String, Object> m = getDataForPlayer(p, this, q);
 			if (m == null) continue;
-			Optional<String>maybeKT=Optional.ofNullable(m.get("Internal Mobnames").toString());
-			Optional<String>maybePARSE=Optional.ofNullable(m.get("Mob Level").toString());
-			Optional<String>maybeFaction=Optional.ofNullable(m.get("Mob Faction").toString());
-			Optional<String>maybeNotifier=Optional.ofNullable(m.get("Notifier enabled").toString());
-			Optional<String>maybeNotifierMsg=Optional.ofNullable(m.get("Notifier msg").toString());
-			String[]kt=maybeKT.orElse("ANY").split(",");
-			String[]parseLvl=maybePARSE.orElse("0").split("-");
-			String[]faction=maybeFaction.orElse("ANY").split(",");
-			String cC=m.getOrDefault("Conditions","NONE").toString();
-			String tC=m.getOrDefault("TargetConditions","NONE").toString();
-			if (cC.toUpperCase().equals("NONE")) cC=null;
-			if (tC.toUpperCase().equals("NONE")) tC=null;
+			final String[]kt=m.getOrDefault("Internal Mobnames","ANY").toString().split(",");
+			final String[]parseLvl=m.getOrDefault("Mob Level","0").toString().split("-");
+			final String[]faction=m.getOrDefault("Mob Faction","ANY").toString().split(",");
+			final boolean notifier=Boolean.parseBoolean(m.getOrDefault("Notifier enabled","FALSE").toString());
+			final String notifierMsg=m.getOrDefault("Notifier msg","Killed %c% of %s%").toString();
+			String cC=m.getOrDefault("Conditions","NONE").toString().toUpperCase();
+			String tC=m.getOrDefault("TargetConditions","NONE").toString().toUpperCase();
+			if (cC.equals("NONE")) cC=null;
+			if (tC.equals("NONE")) tC=null;
 			final boolean useConditions=cC!=null||tC!=null;
 			final MythicCondition mc=useConditions?new MythicCondition(bukkitEntity,p,cC,tC):null;
-			final boolean notifier=Boolean.parseBoolean(maybeNotifier.orElse("FALSE"));
-			String notifierMsg=maybeNotifierMsg.orElse("Killed %c% of %s%");
 			int level = 0; int lmin = 0;int lmax=0;
 			if (parseLvl.length==1) {
 				level = 1; 

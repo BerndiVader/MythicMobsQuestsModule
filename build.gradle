@@ -25,8 +25,8 @@ repositories {
 
 dependencies {
     compileOnly "org.spigotmc:spigot:1.13.2"
-    compileOnly "io.lumine.xikage:mythicmobs:4.5.1"
-    compileOnly "me.blackvein:quests:3.6.2"
+    compileOnly "io.lumine.xikage:mythicmobs:4.5.7"
+    compileOnly "me.blackvein:quests:3.6.6"
     compileOnly "net.citizensnpcs:citizens:2.0.24-b1612"
 }
 
