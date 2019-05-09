@@ -39,23 +39,37 @@ Install (upload, extract, copy) the jar into plugins/Quests/Modules/ and restart
 
 #### Denizen Custom Objective for Quests
 
+**In Quests**
 ```yaml
-quests:
+Quests:
   custom1:
-    name: denizen
-    npc-giver-id: 0
-    ask-message: start
-    finish-message: finish
-    gui-display: name-IRON_SWORD:amount-1
+    name: 'The booze battle'
+    ask-message: 'You booze more than the old drunkard?'
+    finish-message: 'Well done! You are far gone, but you are now the new drunkard in town!'
     stages:
       ordered:
         '1':
           custom-objectives:
             custom1:
               name: Custom Denizen
-              count: 0
+              count: 5
               data:
-                Objective Name: denizen test
+                Objective Name: Defeat the old drunkard!
+                Objective Type: consume m@potion
+                Notify player: 'true'
+                Notify Message: '%c% %s%'
+```
+**In Denizen**
+```yaml
+Events:
+  type: world
+  debug: false
+  
+  events:
+
+    on player consumes item:
+      - announce <context.item.material>
+      - firequestobjective action:INCREMENT quester:<player> "type:consume <context.item.material>"
 ```
 
 #### Kill MythicMobs Objective for Quests
