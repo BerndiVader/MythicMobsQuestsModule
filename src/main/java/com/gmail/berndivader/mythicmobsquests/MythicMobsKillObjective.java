@@ -100,8 +100,8 @@ Listener
 								}
 							}.runTaskLater(Utils.quests.get(),1);
 						} else {
-							if (notifier) this.notifyQuester(qp, q, p, notifierMsg);
-							incrementObjective(p, this, 1, q);
+							if (notifier) this.notifyQuester(qp,q,p,notifierMsg);
+							incrementObjective(p,this,1,q);
 						}
 					}
 				}

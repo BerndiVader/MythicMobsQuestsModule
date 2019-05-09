@@ -6,6 +6,7 @@
 
 #### Changelog
 
+- 09.05.2019 Update: added DenizenCustomObjective
 - 01.23.2019 update: update to Quests 3.6.0
 - 04.12.2018 update: allows optional data entries.
 - 15.11.2018 Update: added Objective Name to Mythicitem deliver objective && counter for the objective name is now optional
@@ -35,6 +36,27 @@
 #### Installation Instructions
 
 Install (upload, extract, copy) the jar into plugins/Quests/Modules/ and restart the server.
+
+#### Denizen Custom Objective for Quests
+
+```yaml
+quests:
+  custom1:
+    name: denizen
+    npc-giver-id: 0
+    ask-message: start
+    finish-message: finish
+    gui-display: name-IRON_SWORD:amount-1
+    stages:
+      ordered:
+        '1':
+          custom-objectives:
+            custom1:
+              name: Custom Denizen
+              count: 0
+              data:
+                Objective Name: denizen test
+```
 
 #### Kill MythicMobs Objective for Quests
 
