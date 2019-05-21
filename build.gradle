@@ -28,7 +28,6 @@ dependencies {
     compileOnly "io.lumine.xikage:mythicmobs:4.5.7"
     compileOnly "me.blackvein:quests:3.6.6"
     compileOnly "net.citizensnpcs:citizens:2.0.24-b1612"
-    compileOnly "com.gmail.berndivader:MythicDenizenAddon:0.513c-SNAPSHOT"
 }
 
 task copy132(type: Copy) {
