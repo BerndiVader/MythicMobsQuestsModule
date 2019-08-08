@@ -25,19 +25,9 @@ repositories {
 
 dependencies {
     compileOnly "org.spigotmc:spigot:1.13.2"
-    compileOnly "io.lumine.xikage:mythicmobs:4.5.7"
-    compileOnly "me.blackvein:quests:3.6.6"
-    compileOnly "net.citizensnpcs:citizens:2.0.24-b1612"
-}
-
-task copy132(type: Copy) {
-	from "build/libs/"+project.name+"-"+project.version+".jar"
-    into "c:/DevServer13/plugins/Quests/modules/"
-}
-
-task copy122(type: Copy) {
-	from "build/libs/"+project.name+"-"+project.version+".jar"
-    into "c:/DevServer 112/plugins/Quests/modules/"
+    compileOnly "io.lumine.xikage:mythicmobs:+"
+    compileOnly "me.blackvein:quests:+"
+    compileOnly "net.citizensnpcs:citizens:+"
 }
 
 task createPom  {
