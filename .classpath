@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="lib" path="G:/Dropbox/Eclipse Workspace/Waterfall/serverA/plugins/MythicMobs-4.9.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="G:/Dropbox/Eclipse Workspace/Waterfall/serverA/plugins/Citizens-2.0.26-b1821.jar"/>
+	<classpathentry kind="lib" path="G:/BuildTools/Spigot/Spigot-API/target/spigot-api-1.15.2-R0.1-SNAPSHOT-shaded.jar"/>
+	<classpathentry kind="lib" path="G:/Dropbox/Eclipse Workspace/Waterfall/serverA/plugins/Quests-3.8.7.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

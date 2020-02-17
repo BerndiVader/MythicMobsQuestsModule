@@ -50,7 +50,7 @@ Listener
 		Optional<MobManager>mobmanager=Utils.getMobManager();
 		if (!mobmanager.isPresent()) return;
 		String mobtype=null,f="";
-		int moblevel = 0;
+		double moblevel = 0;
 		final Player p = e.getEntity().getKiller();
 		final Entity bukkitEntity = e.getEntity();
 		final ActiveMob am=mobmanager.get().getMythicMobInstance(bukkitEntity);
