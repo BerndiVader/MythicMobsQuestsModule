@@ -56,7 +56,7 @@ Listener
 		final ActiveMob am=mobmanager.get().getMythicMobInstance(bukkitEntity);
 		if (am==null) return;
 		mobtype = am.getType().getInternalName();
-		moblevel = am.getLevel();
+		moblevel = (int)Math.round(am.getLevel());
 		if (am.hasFaction()) f = am.getFaction();
 		if (mobtype == null || mobtype.isEmpty()) return;
 		final Quester qp = Utils.quests.get().getQuester(p.getUniqueId());

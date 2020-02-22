@@ -10,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import io.lumine.xikage.mythicmobs.util.types.RangedDouble;
 import me.blackvein.quests.CustomObjective;
 import me.blackvein.quests.Quest;
 import me.blackvein.quests.Quester;

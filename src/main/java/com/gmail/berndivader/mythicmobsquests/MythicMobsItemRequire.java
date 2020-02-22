@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import io.lumine.xikage.mythicmobs.util.types.RangedDouble;
 import me.blackvein.quests.CustomRequirement;
 
 public class MythicMobsItemRequire 

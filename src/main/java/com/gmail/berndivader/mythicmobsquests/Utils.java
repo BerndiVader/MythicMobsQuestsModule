@@ -27,7 +27,6 @@ import io.lumine.xikage.mythicmobs.drops.LootBag;
 import io.lumine.xikage.mythicmobs.drops.droppables.ExperienceDrop;
 import io.lumine.xikage.mythicmobs.mobs.GenericCaster;
 import io.lumine.xikage.mythicmobs.mobs.MobManager;
-import io.lumine.xikage.mythicmobs.util.types.RangedDouble;
 import me.blackvein.quests.Quests;
 
 public class Utils {
