@@ -1,4 +1,4 @@
-# Quest Addon for MythicMobs 4.0.1 or any higher version and Spigot 1.8.8 - 1.13.2
+# Quest Addon for MythicMobs 4.7.2 or any higher version and Spigot 1.8.8 - 1.15.2
 
 # [DOWNLOAD](http://mc.hackerzlair.org:8080/job/MythicMobsQuests/) [![Build Status](http://mc.hackerzlair.org:8080/job/MythicMobsQuests/badge/icon)] <br>
 
@@ -6,6 +6,7 @@
 
 #### Changelog
 
+- 18.03.2020 Update: update to mm 4.7.2+ quests 3.8.8 and fix for getLevel() issue with mm 4.7.2
 - 09.05.2019 Update: added DenizenCustomObjective
 - 01.23.2019 update: update to Quests 3.6.0
 - 04.12.2018 update: allows optional data entries.
