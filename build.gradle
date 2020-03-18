@@ -30,14 +30,9 @@ dependencies {
     compileOnly "net.citizensnpcs:citizens:+"
 }
 
-task copy132(type: Copy) {
+task copy152(type: Copy) {
 	from "build/libs/"+project.name+"-"+project.version+".jar"
-    into "c:/DevServer13/plugins/Quests/modules/"
-}
-
-task copy122(type: Copy) {
-	from "build/libs/"+project.name+"-"+project.version+".jar"
-    into "c:/DevServer 112/plugins/Quests/modules/"
+    into "c:/dev15/plugins/Quests/modules/"
 }
 
 task createPom  {
