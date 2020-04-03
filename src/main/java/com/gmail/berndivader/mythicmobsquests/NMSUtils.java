@@ -6,16 +6,22 @@ import java.lang.reflect.Method;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 
+import io.lumine.xikage.mythicmobs.mobs.ActiveMob;
+
 public class NMSUtils {
 	
-    protected static String vp=new String();
+    protected static String vp="";
 	
     protected static Class<?> class_CraftItemStack;
     protected static Class<?> class_NBTTagCompound;
     protected static Class<?> class_ItemStack;
     
+    protected static Class<?> class_ActiveMob;
+    
     protected static Field class_ItemStack_tagField;
     protected static Field class_CraftItemStack_getHandleField;
+    
+    protected static Field class_ActiveMob_levelField;
     
     protected static Method class_NBTTagCompound_removeMethod;
     protected static Method class_NBTTagCompound_setStringMethod;
@@ -29,11 +35,15 @@ public class NMSUtils {
     		class_ItemStack=fixBukkitClass("net.minecraft.server.ItemStack");
             class_CraftItemStack=fixBukkitClass("org.bukkit.craftbukkit.inventory.CraftItemStack");
             class_NBTTagCompound=fixBukkitClass("net.minecraft.server.NBTTagCompound");
+            class_ActiveMob=NMSUtils.class.getClassLoader().loadClass("io.lumine.xikage.mythicmobs.mobs.ActiveMob");
             
     		class_CraftItemStack_getHandleField=class_CraftItemStack.getDeclaredField("handle");
     		class_CraftItemStack_getHandleField.setAccessible(true);
     		class_ItemStack_tagField = class_ItemStack.getDeclaredField("tag");
     		class_ItemStack_tagField.setAccessible(true);
+    		
+    		class_ActiveMob_levelField=class_ActiveMob.getDeclaredField("level");
+    		class_ActiveMob_levelField.setAccessible(true);
     		
     		class_NBTTagCompound_setStringMethod=class_NBTTagCompound.getMethod("setString",String.class,String.class);
             class_NBTTagCompound_getStringMethod = class_NBTTagCompound.getMethod("getString", String.class);
@@ -98,6 +108,18 @@ public class NMSUtils {
     		ex.printStackTrace();
     	}
     	return s2;
+    }
+    
+    public static int getActiveMobLevel(ActiveMob am) {
+    	Object level;
+    	try {
+			level=class_ActiveMob_levelField.get(am);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+			level=0;
+			Bukkit.getLogger().warning("Error getting Level for Mob. Set to 0");
+		}
+    	return (int)level;
     }
 
 }

@@ -47,20 +47,19 @@ Listener
 	@EventHandler
 	public void onMythicMobDeathEvent (EntityDeathEvent e) {
 		if (!(e.getEntity().getKiller() instanceof Player)) return;
+		final Player p = e.getEntity().getKiller();
+		final Quester qp = Utils.quests.get().getQuester(p.getUniqueId());
+		if (qp.getCurrentQuests().isEmpty()) return;
 		Optional<MobManager>mobmanager=Utils.getMobManager();
 		if (!mobmanager.isPresent()) return;
 		String mobtype=null,f="";
-		int moblevel = 0;
-		final Player p = e.getEntity().getKiller();
 		final Entity bukkitEntity = e.getEntity();
 		final ActiveMob am=mobmanager.get().getMythicMobInstance(bukkitEntity);
 		if (am==null) return;
 		mobtype = am.getType().getInternalName();
-		moblevel = (int)Math.round(Double.valueOf(am.getLevel()));
+		int moblevel = NMSUtils.getActiveMobLevel(am);
 		if (am.hasFaction()) f = am.getFaction();
 		if (mobtype == null || mobtype.isEmpty()) return;
-		final Quester qp = Utils.quests.get().getQuester(p.getUniqueId());
-		if (qp.getCurrentQuests().isEmpty()) return;
 		for (Quest q : qp.getCurrentQuests().keySet()) {
 			Map<String, Object> m = getDataForPlayer(p, this, q);
 			if (m == null) continue;
