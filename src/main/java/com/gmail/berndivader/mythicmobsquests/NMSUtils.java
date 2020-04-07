@@ -119,7 +119,7 @@ public class NMSUtils {
 			level=0;
 			Bukkit.getLogger().warning("Error getting Level for Mob. Set to 0");
 		}
-    	return (int)level;
+		return (int)((double)level);
     }
 
 }
